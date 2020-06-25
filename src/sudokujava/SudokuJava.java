@@ -1,22 +1,21 @@
 package sudokujava;
 
-import java.awt.Toolkit;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
+import net.sourceforge.tess4j.TesseractException;
+import sudokujava.SolverMode.Speed;
+import util.JavaRobot;
+import util.Pair;
+import util.Triple;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import util.ParsingException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Stack;
-import net.sourceforge.tess4j.*;
-import sudokujava.SolverMode.Speed;
+import java.util.*;
+
 import static sudokujava.SolverMode.Speed.*;
-import util.Pair;
-import util.Triple;
-import util.JavaRobot;
 
 /**
  *
@@ -26,8 +25,8 @@ import util.JavaRobot;
 public class SudokuJava {
 
     //<editor-fold desc="global variables" defaultstate="collapsed">
-    public final static String INPUT_FILE = "src/input.txt";
-    public final static String OUTPUT_FILE = "src/output.txt";
+    public final static String INPUT_FILE = "./data/input.txt";
+    public final static String OUTPUT_FILE = "./data/output.txt";
     public byte[][] tiles = new byte[9][9];
     @SuppressWarnings("unchecked")
     public ArrayList<Byte>[][] candidates = (ArrayList<Byte>[][]) new ArrayList[9][9];
@@ -61,7 +60,7 @@ public class SudokuJava {
                        boolean hideNotFoundCandidateMsg,
                        boolean showCandidateRemovalMsg,
                        boolean hideNoBlankWereFound,
-                       char speed) {
+                       Speed speed) {
         startTime = System.nanoTime();
         if (inputTileArray.length != 9)  {
             throw new IllegalArgumentException();
@@ -1685,9 +1684,8 @@ public class SudokuJava {
     
     public void setup() {
         startTime = System.nanoTime();
-        try {
-            mode = SudokuFileParser.parse();
-        } catch (ParsingException e) {
+        mode = SudokuFileParser.parse();
+        if (mode == null) {
             isValid = false;
             return;
         }

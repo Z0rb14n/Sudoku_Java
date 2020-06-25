@@ -1,19 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sudokujava;
 
-import java.awt.Point;
+import java.awt.*;
 
-/**
- *
- * @author adminasaurus
- */
-public class SolverMode {
-
-    public boolean isImage;
+class SolverMode {
+    boolean isImage;
     byte[][] tileArray;
     boolean writeToFile = false;
     boolean hideNotFoundCandidateMsg = true;
@@ -24,13 +14,13 @@ public class SolverMode {
     int imageHeight;
     int imageCaptureDelay;
     Speed speed;
-    
-    public SolverMode(byte[][] tileArray,
-                      boolean writeToFile,
-                      boolean hideCandidateNotFoundMsg,
-                      boolean showCandidateRemovalMsg,
-                      boolean hideNoBlankWereFound,
-                      char speed) {
+
+    SolverMode(byte[][] tileArray,
+               boolean writeToFile,
+               boolean hideCandidateNotFoundMsg,
+               boolean showCandidateRemovalMsg,
+               boolean hideNoBlankWereFound,
+               Speed speed) {
         if (tileArray.length != 9) {
             throw new IllegalArgumentException();
         }
@@ -42,12 +32,13 @@ public class SolverMode {
         this.hideNotFoundCandidateMsg = hideCandidateNotFoundMsg;
         this.showCandidateRemovalMsg = showCandidateRemovalMsg;
         this.hideNoBlankWereFound = hideNoBlankWereFound;
-        this.speed = Speed.getSpeed(speed);
+        this.speed = speed;
         if (this.speed == null) throw new IllegalArgumentException();
         isImage = false;
     }
-    
-    public SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
+
+    SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
+        if (topLeftX < 0 || topLeftY < 0 || imageWidth <= 0 || imageHeight <= 0) throw new IllegalArgumentException();
         isImage = true;
         this.topLeft = new Point(topLeftX,topLeftY);
         this.imageWidth = imageWidth;
@@ -58,56 +49,33 @@ public class SolverMode {
     }
     
     public enum Speed {
-        FAST {
-            @Override
-            public char characterRepresentation() {
-                return '0';
-            }
-        },
-        MEDIUM {
-            @Override
-            public char characterRepresentation() {
-                return '1';
-            }
-        },
-        SLOW {
-            @Override
-            public char characterRepresentation() {
-                return '2';
-            }
-        },
-        VERY_SLOW {
-            @Override
-            public char characterRepresentation() {
-                return '3';
-            }
-        },
-        REALLY_SLOW {
-            @Override
-            public char characterRepresentation() {
-                return '4';
-            }
-        },
-        RECURSE {
-            @Override
-            public char characterRepresentation() {
-                return 'R';
-            }
-        };
+        FAST('0', 0),
+        MEDIUM('1', 1),
+        SLOW('2', 2),
+        VERY_SLOW('3', 3),
+        REALLY_SLOW('4', 4),
+        RECURSE('R', Integer.MAX_VALUE);
+
+        Speed(char rep, int speed) {
+            this.rep = rep;
+            this.speed = speed;
+        }
+
+        private char rep;
+        private int speed;
+
         public char characterRepresentation() {
-            return (char) -1;
+            return rep;
         }
         public static Speed getSpeed(char input) {
             for (Speed sp : Speed.values()) {
-                if (sp.characterRepresentation() == input) return sp;
+                if (sp.rep == input) return sp;
             }
             return null;
         }
         
         public boolean isGreaterThan(Speed speed) {
-            if (this == RECURSE) return speed != RECURSE;
-            if (speed == RECURSE) return false;
-            return this.characterRepresentation() >= speed.characterRepresentation();
+            return Integer.compare(this.speed, speed.speed) == 1;
         }
     }
 }

@@ -1,15 +1,15 @@
 package sudokujava;
 
-import java.awt.*;
+import util.Pair;
 
-class SolverMode {
+public class SolverMode {
     boolean isImage;
     byte[][] tileArray;
     boolean writeToFile = false;
     boolean hideNotFoundCandidateMsg = true;
     boolean showCandidateRemovalMsg = true;
     boolean hideNoBlankWereFound = false;
-    Point topLeft;
+    Pair topLeft;
     int imageWidth;
     int imageHeight;
     int imageCaptureDelay;
@@ -40,7 +40,7 @@ class SolverMode {
     SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
         if (topLeftX < 0 || topLeftY < 0 || imageWidth <= 0 || imageHeight <= 0) throw new IllegalArgumentException();
         isImage = true;
-        this.topLeft = new Point(topLeftX,topLeftY);
+        this.topLeft = new Pair(topLeftX, topLeftY);
         this.imageWidth = imageWidth;
         this.imageHeight = imageHeight;
         this.imageCaptureDelay = imageDelay;
@@ -77,5 +77,45 @@ class SolverMode {
         public boolean isGreaterThan(Speed speed) {
             return Integer.compare(this.speed, speed.speed) == 1;
         }
+    }
+
+    public boolean showCandidateNotFoundMessage() {
+        return !hideNotFoundCandidateMsg;
+    }
+
+    public boolean showCandidateRemovalMessage() {
+        return showCandidateRemovalMsg;
+    }
+
+    public boolean showAlgorithmUnusedMessage() {
+        return hideNoBlankWereFound;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(isImage);
+        sb.append("\n");
+        if (tileArray == null) sb.append("IMAGE");
+        else {
+            for (byte[] bytes : tileArray) {
+                for (byte b : bytes) {
+                    sb.append(b);
+                }
+                sb.append("\n");
+            }
+        }
+        sb.append(writeToFile);
+        sb.append(hideNotFoundCandidateMsg);
+        sb.append(showCandidateRemovalMsg);
+        sb.append(hideNoBlankWereFound);
+        if (topLeft != null) sb.append(topLeft.toString());
+        if (isImage) {
+            sb.append(imageWidth);
+            sb.append(imageHeight);
+            sb.append(imageCaptureDelay);
+        }
+        sb.append(speed.characterRepresentation());
+        return sb.toString();
     }
 }

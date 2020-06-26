@@ -5,20 +5,45 @@
  */
 package ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  *
  * @author adminasaurus
  */
 public class SudokuMenu extends JPanel {
+    public static final String[] VALUES = new String[]{"File", "Image", "Manual"};
+    public static final String DEFAULT = "Manual";
+    private JPanel actualMenu = new JPanel();
     public SudokuMenu() {
         Dimension size = new Dimension(480,100);
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
-        setBackground(Color.RED);
+        setLayout(new BorderLayout());
+        add(new SourceBox(), BorderLayout.PAGE_START);
+        actualMenu.setLayout(new CardLayout());
+        actualMenu.add(new ManualMenu(), VALUES[2]);
+        actualMenu.add(new ImageMenu(), VALUES[1]);
+        actualMenu.add(new FileMenu(), VALUES[0]);
+        add(actualMenu, BorderLayout.CENTER);
+    }
+
+    private class SourceBox extends JComboBox<String> implements ItemListener {
+        SourceBox() {
+            super(VALUES);
+            setSelectedItem(DEFAULT);
+            setEditable(false);
+            addItemListener(this);
+        }
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            CardLayout cl = (CardLayout) actualMenu.getLayout();
+            cl.show(actualMenu, (String) e.getItem());
+        }
     }
 }

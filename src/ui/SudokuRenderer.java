@@ -5,13 +5,9 @@
  */
 package ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import javax.swing.text.PlainDocument;
+import java.awt.*;
 
 /**
  *
@@ -66,18 +62,10 @@ public class SudokuRenderer extends JPanel {
     
     
     public class SudokuSquare extends JTextField {
-        public SudokuSquare() {
+        SudokuSquare() {
             super();
-            SudokuSquare ss = this; 
             setHorizontalAlignment(JTextField.CENTER);
-            addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyTyped(KeyEvent e) {
-                    if (ss.getText().length() == 1 || !Character.isDigit(e.getKeyChar())) {
-                        e.consume();
-                    }
-                }
-            });
+            ((PlainDocument) getDocument()).setDocumentFilter(new IntegerFilter(1, true));
         }
     }
 }

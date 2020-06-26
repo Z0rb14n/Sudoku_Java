@@ -3,16 +3,24 @@ package ui;
 import javax.swing.*;
 
 public class App extends JFrame {
+    private static App singleton;
+
+    public static App getInstance() {
+        if (singleton == null) {
+            singleton = new App();
+        }
+        return singleton;
+    }
     private App() {
         super("l m a o ");
         AppPanel ap = new AppPanel();
         add(ap);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(false);
-        setVisible(true);
         pack();
+        setVisible(true);
     }
     public static void main(String[] args) {
-        new App();
+        App.getInstance();
     }
 }

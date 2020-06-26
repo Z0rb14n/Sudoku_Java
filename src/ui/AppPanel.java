@@ -5,23 +5,17 @@
  */
 package ui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
-/**
- *
- * @author adminasaurus
- */
-public class AppPanel extends JPanel {
+class AppPanel extends JPanel {
     SudokuRenderer sr;
     SudokuMenu sm;
-    public AppPanel() {
+
+    AppPanel() {
         super();
         setPreferredSize(new Dimension(480, 640));
         setBackground(Color.WHITE);
-        BoxLayout bl = new BoxLayout(this,BoxLayout.PAGE_AXIS);
         setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
         sm  =new SudokuMenu();
         sr = new SudokuRenderer();

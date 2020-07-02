@@ -7,6 +7,14 @@ import java.util.ArrayList;
 // FOR ALL METHODS, REQUIRES tiles/candidates PARAMETER to be VALID SUDOKU PUZZLE/CANDIDATES
 // Represents general convenience methods for all algorithms
 public final class General {
+    public static boolean arrayContains(byte[] array, byte test) {
+        for (byte b : array) {
+            if (b == test) {
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Concatenates all the Arrays of ArrayLists of candidates (used in Hidden
      * Singles)
@@ -123,7 +131,7 @@ public final class General {
      * @param col column number from 1-9
      * @return byte array of contents of column
      */
-    static byte[] findColumn(byte[][] tiles, int col) {
+    public static byte[] findColumn(byte[][] tiles, int col) {
         if (col < 1 || col > 9) {
             throw new IllegalArgumentException("findColumn called with invalid number " + col);
         }
@@ -140,7 +148,7 @@ public final class General {
      * @param squarenum square number (top left is 1, bottom left is 9)
      * @return byte array of contents of square
      */
-    static byte[] findSquare(byte[][] tiles, int squarenum) {
+    public static byte[] findSquare(byte[][] tiles, int squarenum) {
         if (squarenum < 1 || squarenum > 9) {
             throw new IllegalArgumentException("findSquare called with invalid number " + squarenum);
         }
@@ -226,9 +234,9 @@ public final class General {
      * @param col column number (1-9)
      * @return integer of square number
      */
-    static int findSquareNum(int row, int col) {
-        int colSquare = (int) Math.ceil(col / 3.0);
-        int rowSquare = (int) Math.ceil(row / 3.0) - 1;
+    public static int findSquareNum(int row, int col) {
+        int colSquare = (int) Math.ceil(col / 3.0f);
+        int rowSquare = (int) Math.ceil(row / 3.0f) - 1;
         return rowSquare * 3 + colSquare;
     }
 
@@ -424,7 +432,7 @@ public final class General {
         throw new RuntimeException();
     }
 
-    private static void printTiles(byte[][] tiles) {
+    public static void printTiles(byte[][] tiles) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 System.out.print(tiles[i][j]);

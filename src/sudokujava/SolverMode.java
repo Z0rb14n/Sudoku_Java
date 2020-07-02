@@ -1,15 +1,14 @@
 package sudokujava;
 
-import util.Pair;
-
 public class SolverMode {
-    boolean isImage;
+    private boolean isImage;
     byte[][] tileArray;
-    boolean writeToFile = false;
-    boolean hideNotFoundCandidateMsg = true;
-    boolean showCandidateRemovalMsg = true;
-    boolean hideNoBlankWereFound = false;
-    Pair topLeft;
+    private boolean writeToFile = false;
+    private boolean hideNotFoundCandidateMsg = true;
+    private boolean showCandidateRemovalMsg = true;
+    private boolean hideNoBlankWereFound = false;
+    private int topLeftX = Integer.MIN_VALUE;
+    private int topLeftY = Integer.MIN_VALUE;
     int imageWidth;
     int imageHeight;
     int imageCaptureDelay;
@@ -37,15 +36,25 @@ public class SolverMode {
         isImage = false;
     }
 
-    SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
-        if (topLeftX < 0 || topLeftY < 0 || imageWidth <= 0 || imageHeight <= 0) throw new IllegalArgumentException();
+    SolverMode(byte[][] tileArray, boolean writeToFile, boolean hideCandidateNotFoundMsg, boolean showCandidateRemovalMsg, boolean hideNoBlankWereFound) {
+        this(tileArray, writeToFile, hideCandidateNotFoundMsg, showCandidateRemovalMsg, hideNoBlankWereFound, Speed.getDefault());
+    }
+
+    SolverMode(int topLeftX, int topLeftY, int imgWidth, int imgHeight, int imgDelay, Speed speed) {
+        if (topLeftX < 0 || topLeftY < 0 || imgWidth <= 0 || imgHeight <= 0) throw new IllegalArgumentException();
         isImage = true;
-        this.topLeft = new Pair(topLeftX, topLeftY);
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
-        this.imageCaptureDelay = imageDelay;
-        this.speed = SudokuJava.DEFAULT;
-        System.out.println("Image top left coord: " + topLeft.getX() + "," + topLeft.getY() + " width: " + imageWidth + ", height: " + imageHeight + ", delay: " + imageCaptureDelay);
+        this.topLeftX = topLeftX;
+        this.topLeftY = topLeftY;
+        this.imageWidth = imgWidth;
+        this.imageHeight = imgHeight;
+        this.imageCaptureDelay = imgDelay;
+        this.speed = speed;
+        System.out.println("Image top left coord: " + topLeftX + "," + topLeftY + " width: " + imageWidth + ", height: " + imageHeight + ", delay: " + imageCaptureDelay);
+
+    }
+
+    SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
+        this(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay, Speed.getDefault());
     }
     
     public enum Speed {
@@ -55,6 +64,10 @@ public class SolverMode {
         VERY_SLOW('3', 3),
         REALLY_SLOW('4', 4),
         RECURSE('R', Integer.MAX_VALUE);
+
+        public static Speed getDefault() {
+            return SLOW;
+        }
 
         Speed(char rep, int speed) {
             this.rep = rep;
@@ -79,6 +92,14 @@ public class SolverMode {
         }
     }
 
+    boolean doWriteToFile() {
+        return writeToFile;
+    }
+
+    boolean isImage() {
+        return isImage;
+    }
+
     public boolean showCandidateNotFoundMessage() {
         return !hideNotFoundCandidateMsg;
     }
@@ -91,11 +112,18 @@ public class SolverMode {
         return hideNoBlankWereFound;
     }
 
+    int getTopLeftX() {
+        return topLeftX;
+    }
+
+    int getTopLeftY() {
+        return topLeftY;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(isImage);
-        sb.append("\n");
+        sb.append(isImage).append("\n");
         if (tileArray == null) sb.append("IMAGE");
         else {
             for (byte[] bytes : tileArray) {
@@ -105,16 +133,9 @@ public class SolverMode {
                 sb.append("\n");
             }
         }
-        sb.append(writeToFile);
-        sb.append(hideNotFoundCandidateMsg);
-        sb.append(showCandidateRemovalMsg);
-        sb.append(hideNoBlankWereFound);
-        if (topLeft != null) sb.append(topLeft.toString());
-        if (isImage) {
-            sb.append(imageWidth);
-            sb.append(imageHeight);
-            sb.append(imageCaptureDelay);
-        }
+        sb.append(writeToFile).append(hideNotFoundCandidateMsg).append(showCandidateRemovalMsg).append(hideNoBlankWereFound);
+        if (topLeftX != Integer.MIN_VALUE) sb.append(topLeftX).append(topLeftY);
+        if (isImage) sb.append(imageWidth).append(imageHeight).append(imageCaptureDelay);
         sb.append(speed.characterRepresentation());
         return sb.toString();
     }

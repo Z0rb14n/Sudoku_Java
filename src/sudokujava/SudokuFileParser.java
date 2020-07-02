@@ -7,17 +7,14 @@ import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-import static sudokujava.SudokuJava.INPUT_FILE;
-
 class SudokuFileParser {
-    static SolverMode parse() {
-        SolverMode result = attemptParseAsImageFile();
-        if (result == null) return attemptParseAsTextFile();
+    static SolverMode parse(File file) {
+        SolverMode result = attemptParseAsImageFile(file);
+        if (result == null) return attemptParseAsTextFile(file);
         else return result;
     }
 
-    private static SolverMode attemptParseAsImageFile() {
-        File file = new File(INPUT_FILE);
+    private static SolverMode attemptParseAsImageFile(File file) {
         try (Scanner input = new Scanner(file)) {
             input.useDelimiter(",");
             if (!input.next().equals("IMAGE")) {
@@ -33,8 +30,7 @@ class SudokuFileParser {
         }
     }
 
-    private static SolverMode attemptParseAsTextFile() {
-        File file = new File(INPUT_FILE);
+    private static SolverMode attemptParseAsTextFile(File file) {
         try (Scanner input = new Scanner(file)) {
             byte[][] tiles = new byte[9][9];
             String headerLine = input.nextLine().trim();

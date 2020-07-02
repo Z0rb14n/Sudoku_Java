@@ -67,28 +67,6 @@ public class SudokuJava {
         this.setupFinish = System.nanoTime();
         this.setupTime = setupFinish - startTime;
     }
-    
-    public SudokuJava (byte[][] inputTileArray,
-                       boolean writeToFile,
-                       boolean hideNotFoundCandidateMsg,
-                       boolean showCandidateRemovalMsg,
-                       boolean hideNoBlankWereFound,
-                       Speed speed) {
-        startTime = System.nanoTime();
-        if (inputTileArray.length != 9)  {
-            throw new IllegalArgumentException();
-        }
-        for (byte[] bytes : inputTileArray) {
-            if (bytes.length != 9) {
-                throw new IllegalArgumentException();
-            }
-        }
-        this.mode = new SolverMode(inputTileArray,writeToFile,hideNotFoundCandidateMsg,showCandidateRemovalMsg,hideNoBlankWereFound,speed);
-        tiles = mode.tileArray;
-        CandidateGeneration.generate(tiles, candidates);
-        this.setupFinish = System.nanoTime();
-        this.setupTime = setupFinish - startTime;
-    }
 
     public SudokuJava(int topLeftX,
                       int topLeftY,

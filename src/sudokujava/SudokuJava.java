@@ -23,7 +23,7 @@ public class SudokuJava {
     private ArrayList<Byte>[][] candidates = (ArrayList<Byte>[][]) new ArrayList[9][9];
     private boolean isComplete = false;
     private boolean isValid = true;
-    private final static boolean AUTOTYPE = true;
+    private final static boolean AUTOTYPE_DEFAULT = true;
     private final static boolean DEBUG = false;
     private static final int LOOP_LIMIT = 200;
     private long startTime;
@@ -31,18 +31,41 @@ public class SudokuJava {
     private long solveTime;
     private long solveFinish;
     private long setupTime;
+    private boolean autoType = AUTOTYPE_DEFAULT;
     private final static int IMAGE_OFFSET = 2;
     private static final ITesseract instance = new Tesseract();
     public SolverMode mode;
     private RobotWrapper bot;
-    
+
     public SudokuJava() {
+        this(INPUT_FILE);
+    }
+
+    public SudokuJava(String file) {
         startTime = System.nanoTime();
         instance.setDatapath("tessdata");
         setupRobot();
-        fileSetup();
+        fileSetup(new File(file));
         setupFinish = System.nanoTime();
         setupTime = setupFinish - startTime;
+    }
+
+    public SudokuJava(byte[][] array, Speed speed) {
+        startTime = System.nanoTime();
+        if (array.length != 9) {
+            throw new IllegalArgumentException();
+        }
+        for (byte[] bytes : array) {
+            if (bytes.length != 9) {
+                throw new IllegalArgumentException();
+            }
+        }
+        instance.setDatapath("tessdata");
+        this.mode = new SolverMode(array, speed);
+        tiles = mode.tileArray;
+        CandidateGeneration.generate(tiles, candidates);
+        this.setupFinish = System.nanoTime();
+        this.setupTime = setupFinish - startTime;
     }
     
     public SudokuJava (byte[][] inputTileArray,
@@ -60,34 +83,46 @@ public class SudokuJava {
                 throw new IllegalArgumentException();
             }
         }
-        instance.setDatapath("tessdata");
         this.mode = new SolverMode(inputTileArray,writeToFile,hideNotFoundCandidateMsg,showCandidateRemovalMsg,hideNoBlankWereFound,speed);
+        tiles = mode.tileArray;
         CandidateGeneration.generate(tiles, candidates);
         this.setupFinish = System.nanoTime();
         this.setupTime = setupFinish - startTime;
+    }
+
+    public SudokuJava(int topLeftX,
+                      int topLeftY,
+                      int imgWidth,
+                      int imgHeight,
+                      boolean autoType,
+                      Speed speed) {
+        this(topLeftX, topLeftY, imgWidth, imgHeight, 3000, autoType, speed);
     }
     
     public SudokuJava (int topLeftX,
                        int topLeftY,
                        int imageWidth,
                        int imageHeight,
-                       int imageDelay) {
+                       int imageDelay,
+                       boolean autoType,
+                       Speed speed) {
         this.startTime = System.nanoTime();
         setupRobot();
-        this.mode = new SolverMode(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay);
+        this.mode = new SolverMode(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay, speed);
         instance.setDatapath("tessdata");
         try {
             Thread.sleep(imageDelay);
         } catch (InterruptedException ex) {
             System.err.println("Interrupted.");
         }
+        this.autoType = autoType;
         readTilesImage();
         CandidateGeneration.generate(tiles, candidates);
         this.setupFinish = System.nanoTime();
         this.setupTime = setupFinish - startTime;
     }
 
-    private void run() {
+    public void run() {
         if (!isValid) return;
         final long startRunTime = System.nanoTime();
         if (mode.speed == RECURSE) {
@@ -168,18 +203,19 @@ public class SudokuJava {
                         isValid = false;
                         System.out.println("Invalid characters in OCR: " + result + ", length: " + result.length());
                         Toolkit.getDefaultToolkit().beep();
-                        System.exit(-1);
+                        throw new OCRException();
                     }
                     System.out.println(result);
                 } catch (TesseractException e) {
                     e.printStackTrace();
+                    throw new OCRException();
                 }
             }
         }
     }
 
-    private void fileSetup() {
-        mode = SudokuFileParser.parse(new File(INPUT_FILE));
+    private void fileSetup(File file) {
+        mode = SudokuFileParser.parse(file);
         if (mode == null) {
             isValid = false;
             return;
@@ -203,7 +239,7 @@ public class SudokuJava {
         } catch (java.awt.AWTException e) {
             System.err.println("Could not initialize robot.");
             e.printStackTrace();
-            System.exit(2);
+            throw new OCRException();
         }
     }
 
@@ -212,7 +248,7 @@ public class SudokuJava {
      */
     private void onFinish() {
         if (mode.doWriteToFile()) writeToFile();
-        if (AUTOTYPE && mode.isImage()) typeValues();
+        if (autoType && mode.isImage()) typeValues();
         General.printTiles(tiles);
         long end = System.nanoTime();
         long outputTime = end - solveFinish;
@@ -220,7 +256,10 @@ public class SudokuJava {
         System.out.printf("Setup:  %010.3fms%n", setupTime / 1000000.0);
         System.out.printf("Solve:  %010.3fms%n", solveTime / 1000000.0);
         System.out.printf("Output: %010.3fms%n", outputTime / 1000000.0);
-        System.exit(0);
+    }
+
+    public byte[][] getTiles() {
+        return tiles;
     }
 
     /**

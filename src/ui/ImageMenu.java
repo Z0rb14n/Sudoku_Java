@@ -5,7 +5,7 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 
 class ImageMenu extends JPanel {
-    // HAS ALL BELOW VALUES + AUTO TYPE OPTION - VALUES DISABLES ON FILE/MANUAL MODE, AUTOTYPE DISABLES ON MANUAL ONLY
+    // TODO POTENTAL IMAGE DELAY OPTION
     private static final String[] VALUES = new String[]{"Top Left X", "Top Left Y", "Width", "Height"};
     private LabelAndField[] fields = new LabelAndField[VALUES.length];
     private AutoTypeBox box = new AutoTypeBox();

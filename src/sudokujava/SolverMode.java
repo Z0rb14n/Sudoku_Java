@@ -36,6 +36,10 @@ public class SolverMode {
         isImage = false;
     }
 
+    SolverMode(byte[][] tileArray, Speed speed) {
+        this(tileArray, false, true, true, false, speed);
+    }
+
     SolverMode(byte[][] tileArray, boolean writeToFile, boolean hideCandidateNotFoundMsg, boolean showCandidateRemovalMsg, boolean hideNoBlankWereFound) {
         this(tileArray, writeToFile, hideCandidateNotFoundMsg, showCandidateRemovalMsg, hideNoBlankWereFound, Speed.getDefault());
     }

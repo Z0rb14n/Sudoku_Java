@@ -21,18 +21,19 @@ public class SudokuRenderer extends JPanel {
         byte[][] tiles = new byte[9][9];
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                tiles[i][j] = Byte.parseByte(squares[i * 9 + j].getText());
+                if (squares[i * 9 + j].getText().isEmpty()) tiles[i][j] = 0;
+                else tiles[i][j] = Byte.parseByte(squares[i * 9 + j].getText());
             }
         }
+        sudokujava.algorithm.General.printTiles(tiles);
         return tiles;
     }
     
     public void writeSolution(byte[][] b) {
-        if (b.length != 9 && b[0].length != 9) throw new IllegalArgumentException();
+        if (b.length != 9) throw new IllegalArgumentException();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 squares[i*9 + j].setText("" + b[i][j]);
-                squares[i*9 + j].setEnabled(false);
             }
         }
     }

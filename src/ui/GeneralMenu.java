@@ -17,7 +17,7 @@ class GeneralMenu extends JPanel {
     }
 
     void update(UIMode mode) {
-        System.out.println("New mode is: " + mode.toString() + " (changes nothing)");
+        sc.setEnabled(mode != UIMode.FILE);
     }
 
     Speed getSpeed() {

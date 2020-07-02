@@ -1,5 +1,7 @@
 package ui;
 
+import sudokujava.SolverMode.Speed;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -43,8 +45,43 @@ class SudokuMenu extends JPanel {
             im.update(mode);
             fm.update(mode);
         }
+
+        int[] getFields() {
+            return im.getFieldValues();
+        }
+
+        boolean getAutoType() {
+            return im.getAutotypeEnabled();
+        }
+
+        Speed getSpeed() {
+            return mm.getSpeed();
+        }
+
+        String getFile() {
+            return fm.getFileLocation();
+        }
     }
 
+    int[] getFields() {
+        return menu.getFields();
+    }
+
+    boolean getAutoType() {
+        return menu.getAutoType();
+    }
+
+    Speed getSpeed() {
+        return menu.getSpeed();
+    }
+
+    String getFile() {
+        return menu.getFile();
+    }
+
+    UIMode getUIMode() {
+        return UIMode.getMode((String) sb.getSelectedItem());
+    }
     private class SourceBox extends JComboBox<String> implements ItemListener {
         SourceBox() {
             super(UIMode.labels());

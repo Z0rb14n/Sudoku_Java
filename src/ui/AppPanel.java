@@ -14,12 +14,12 @@ class AppPanel extends JPanel {
 
     AppPanel() {
         super();
-        setPreferredSize(new Dimension(480, 640));
+        setPreferredSize(new Dimension(600, 640));
         setBackground(Color.WHITE);
-        setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+        setLayout(new BorderLayout());
         sm  =new SudokuMenu();
         sr = new SudokuRenderer();
-        add(sm);
-        add(sr);
+        add(sm, BorderLayout.PAGE_START);
+        add(sr, BorderLayout.CENTER);
     }
 }

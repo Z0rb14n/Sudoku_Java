@@ -1,21 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ui;
 
 import javax.swing.*;
 import javax.swing.text.PlainDocument;
 import java.awt.*;
 
-/**
- *
- * @author adminasaurus
- */
 public class SudokuRenderer extends JPanel {
-    SudokuSquare[] squares = new SudokuSquare[81];
-    public SudokuRenderer() {
+    private SudokuSquare[] squares = new SudokuSquare[81];
+
+    SudokuRenderer() {
         setBoxSize(new Dimension(360,360));
         setBackground(Color.WHITE);
         setLayout(new GridLayout(9,9));
@@ -23,6 +15,16 @@ public class SudokuRenderer extends JPanel {
             squares[i] = new SudokuSquare();
             add(squares[i]);
         }
+    }
+
+    public byte[][] getTiles() {
+        byte[][] tiles = new byte[9][9];
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                tiles[i][j] = Byte.parseByte(squares[i * 9 + j].getText());
+            }
+        }
+        return tiles;
     }
     
     public void writeSolution(byte[][] b) {
@@ -59,9 +61,9 @@ public class SudokuRenderer extends JPanel {
             ss.setEnabled(true);
         }
     }
-    
-    
-    public class SudokuSquare extends JTextField {
+
+
+    private class SudokuSquare extends JTextField {
         SudokuSquare() {
             super();
             setHorizontalAlignment(JTextField.CENTER);

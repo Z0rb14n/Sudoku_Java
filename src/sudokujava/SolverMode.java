@@ -69,6 +69,14 @@ public class SolverMode {
             return SLOW;
         }
 
+        public static String[] getLabels() {
+            String[] labels = new String[values().length];
+            for (int i = 0; i < labels.length; i++) {
+                labels[i] = values()[i].toString();
+            }
+            return labels;
+        }
+
         Speed(char rep, int speed) {
             this.rep = rep;
             this.speed = speed;

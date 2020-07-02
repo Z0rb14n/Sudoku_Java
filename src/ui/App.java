@@ -20,6 +20,10 @@ public class App extends JFrame {
         pack();
         setVisible(true);
     }
+
+    void run() {
+        // TODO METHOD BODY
+    }
     public static void main(String[] args) {
         App.getInstance();
     }

@@ -3,7 +3,6 @@ package cli;
 import sudokujava.SolverMode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -17,6 +16,8 @@ public class SudokuCLI {
         usedArguments.put("-d", 1); // delay
         usedArguments.put("-p", 0); // whether debug stuff is printed??
         usedArguments.put("-o", 1); // output file
+        usedArguments.put("-a", 0); // whether autotype is enabled
+        // TODO MORE ARGUMENTS
     }
 
     private static boolean initialHelpCases(String[] args) {
@@ -56,7 +57,7 @@ public class SudokuCLI {
         return param;
     }
 
-    public static CLISettings generateSettings(String[] args) {
+    public static SolverMode generateSettings(String[] args) {
         HashMap<String, String[]> param = generateParameters(args);
         for (String key : param.keySet()) {
             if (usedArguments.containsKey(key) && usedArguments.get(key) != param.get(key).length) {
@@ -66,38 +67,15 @@ public class SudokuCLI {
                 System.out.println("Unused argument: " + key);
             }
         }
-        CLISettings settings = new CLISettings();
-        settings.inputFile = param.containsKey("-f") ? param.get("-f")[0] : null;
-        settings.debugPrinted = param.containsKey("-p");
-        settings.outputFile = param.containsKey("-o") ? param.get("-o")[0] : null;
-        try {
-            settings.imgDelay = param.containsKey("-d") ? Integer.parseInt(param.get("-d")[0]) : CLISettings.DEFAULT_INT_VALUE;
-        } catch (NumberFormatException ex) {
-            throw new ArgumentException("Argument image delay expected integer number: " + param.get("-d")[0]);
-        }
-        if (param.containsKey("-s")) {
-            if (param.get("-s")[0].length() != 1) {
-                throw new ArgumentException("Argument speed requires length 1: " + param.get("-s")[0]);
-            }
-            settings.speed = SolverMode.Speed.getSpeed(param.get("-s")[0].charAt(0));
-        }
-        if (param.containsKey("-i")) {
-            try {
-                settings.topLeftX = Integer.parseInt(param.get("-i")[0]);
-                settings.topLeftY = Integer.parseInt(param.get("-i")[1]);
-                settings.imgWidth = Integer.parseInt(param.get("-i")[2]);
-                settings.imgHeight = Integer.parseInt(param.get("-i")[3]);
-            } catch (NumberFormatException ex) {
-                throw new ArgumentException("Argument image section expected integer number: " + Arrays.toString(param.get("-i")));
-            }
-        }
-        return settings;
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     public static void main(String[] args) {
         if (initialHelpCases(args)) return;
         try {
-            CLISettings settings = generateSettings(args);
+            SolverMode settings = generateSettings(args);
+
+            throw new UnsupportedOperationException("Not implemented yet.");
         } catch (ArgumentException ex) {
             System.err.println(ex.getMessage());
             System.exit(-1);

@@ -9,10 +9,14 @@ public class SolverMode {
     private boolean hideNoBlankWereFound = false;
     private int topLeftX = Integer.MIN_VALUE;
     private int topLeftY = Integer.MIN_VALUE;
-    int imageWidth;
-    int imageHeight;
+    public int imageWidth;
+    public int imageHeight;
     int imageCaptureDelay;
     Speed speed;
+    public String inputFile = null;
+    public boolean debugPrinted = false;
+    public boolean autoType = false;
+    public String outputFile = null;
 
     SolverMode(byte[][] tileArray,
                boolean writeToFile,
@@ -125,11 +129,11 @@ public class SolverMode {
         return hideNoBlankWereFound;
     }
 
-    int getTopLeftX() {
+    public int getTopLeftX() {
         return topLeftX;
     }
 
-    int getTopLeftY() {
+    public int getTopLeftY() {
         return topLeftY;
     }
 

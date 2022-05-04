@@ -1,14 +1,10 @@
 package sudokujava;
 
-import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
 import sudokujava.SolverMode.Speed;
 import sudokujava.algorithm.*;
 import util.RobotWrapper;
+import util.SudokuScreenIO;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,10 +28,9 @@ public class SudokuJava {
     private long solveFinish;
     private long setupTime;
     private boolean autoType = AUTOTYPE_DEFAULT;
-    private final static int IMAGE_OFFSET = 2;
-    private static final ITesseract instance = new Tesseract();
     public SolverMode mode;
     private RobotWrapper bot;
+    private SudokuScreenIO ssio;
 
     public SudokuJava() {
         this(INPUT_FILE);
@@ -43,8 +38,7 @@ public class SudokuJava {
 
     public SudokuJava(String file) {
         startTime = System.nanoTime();
-        instance.setDatapath("tessdata");
-        setupRobot();
+        ssio = new SudokuScreenIO();
         fileSetup(new File(file));
         setupFinish = System.nanoTime();
         setupTime = setupFinish - startTime;
@@ -60,7 +54,7 @@ public class SudokuJava {
                 throw new IllegalArgumentException();
             }
         }
-        instance.setDatapath("tessdata");
+        ssio = new SudokuScreenIO();
         this.mode = new SolverMode(array, speed);
         tiles = mode.tileArray;
         CandidateGeneration.generate(tiles, candidates);
@@ -85,16 +79,15 @@ public class SudokuJava {
                       boolean autoType,
                       Speed speed) {
         this.startTime = System.nanoTime();
-        setupRobot();
+        ssio = new SudokuScreenIO();
         this.mode = new SolverMode(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay, speed);
-        instance.setDatapath("tessdata");
         try {
             Thread.sleep(imageDelay);
         } catch (InterruptedException ex) {
             System.err.println("Interrupted.");
         }
         this.autoType = autoType;
-        readTilesImage();
+        tiles = ssio.readTiles(mode);
         CandidateGeneration.generate(tiles, candidates);
         this.setupFinish = System.nanoTime();
         this.setupTime = setupFinish - startTime;
@@ -146,52 +139,6 @@ public class SudokuJava {
         sj.run();
     }
 
-    private void readTilesImage() {
-        BufferedImage[][] lol = new BufferedImage[9][9];
-        int x = mode.getTopLeftX();
-        int y = mode.getTopLeftY();
-        bot.mouseMove(x, y);
-        bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y);
-        bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y + mode.imageHeight);
-        bot.delay(200);
-        bot.mouseMove(x, y + mode.imageHeight);
-        int width = Math.floorDiv(mode.imageWidth, 9);
-        int height = Math.floorDiv(mode.imageHeight, 9);
-        BufferedImage bigBoi = bot.screenShot(x + IMAGE_OFFSET, y + IMAGE_OFFSET, mode.imageWidth - (2 * IMAGE_OFFSET), mode.imageHeight - (2 * IMAGE_OFFSET));
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                lol[i][j] = bigBoi.getSubimage((width * j), (height * i), width - (2 * IMAGE_OFFSET), height - (2 * IMAGE_OFFSET));
-            }
-        }
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                try {
-                    String result = instance.doOCR(lol[i][j]).trim();
-                    result = result.replaceAll("([\\s]+|[\\n]+|[|]+)", "");
-                    if (result.isEmpty()) {
-                        System.out.print("Blank char.");
-                        tiles[i][j] = 0;
-                        continue;
-                    }
-                    try {
-                        tiles[i][j] = Byte.parseByte(result);
-                    } catch (NumberFormatException e) {
-                        isValid = false;
-                        System.out.println("Invalid characters in OCR: " + result + ", length: " + result.length());
-                        Toolkit.getDefaultToolkit().beep();
-                        throw new OCRException();
-                    }
-                    System.out.println(result);
-                } catch (TesseractException e) {
-                    e.printStackTrace();
-                    throw new OCRException();
-                }
-            }
-        }
-    }
-
     private void fileSetup(File file) {
         mode = SudokuFileParser.parse(file);
         if (mode == null) {
@@ -201,7 +148,7 @@ public class SudokuJava {
         if (mode.isImage()) {
             try {
                 Thread.sleep(mode.imageCaptureDelay);
-                readTilesImage();
+                tiles = ssio.readTiles(mode);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
@@ -211,22 +158,12 @@ public class SudokuJava {
         CandidateGeneration.generate(tiles, candidates);
     }
 
-    private void setupRobot() {
-        try {
-            bot = new RobotWrapper();
-        } catch (java.awt.AWTException e) {
-            System.err.println("Could not initialize robot.");
-            e.printStackTrace();
-            throw new OCRException();
-        }
-    }
-
     /**
      * Writes to output + type values if finished
      */
     private void onFinish() {
         if (mode.doWriteToFile()) writeToFile();
-        if (autoType && mode.isImage()) typeValues();
+        if (autoType && mode.isImage()) ssio.typeValues(mode, tiles);
         General.printTiles(tiles);
         long end = System.nanoTime();
         long outputTime = end - solveFinish;
@@ -261,23 +198,6 @@ public class SudokuJava {
             writer.close();
         } catch (IOException e) {
             System.out.println("Could not create or write to file " + OUTPUT_FILE);
-        }
-    }
-
-    private void typeValues() {
-        final int width = Math.floorDiv(mode.imageWidth, 9);
-        final int halfWidth = Math.floorDiv(width, 2);
-        final int height = Math.floorDiv(mode.imageHeight, 9);
-        final int halfHeight = Math.floorDiv(height, 2);
-        int x = mode.getTopLeftX() + halfWidth;
-        int y = mode.getTopLeftY() + halfHeight;
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                bot.mouseMove(x + (j * width), y + (i * height));
-                bot.button1();
-                bot.delay(100);
-                bot.simplerType("" + tiles[i][j]);
-            }
         }
     }
 }

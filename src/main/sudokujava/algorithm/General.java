@@ -15,6 +15,7 @@ public final class General {
         }
         return false;
     }
+
     /**
      * Concatenates all the Arrays of ArrayLists of candidates (used in Hidden
      * Singles)

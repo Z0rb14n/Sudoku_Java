@@ -8,9 +8,9 @@ public class SudokuRenderer extends JPanel {
     private SudokuSquare[] squares = new SudokuSquare[81];
 
     SudokuRenderer() {
-        setBoxSize(new Dimension(360,360));
+        setBoxSize(new Dimension(360, 360));
         setBackground(Color.WHITE);
-        setLayout(new GridLayout(9,9));
+        setLayout(new GridLayout(9, 9));
         for (int i = 0; i < 81; i++) {
             squares[i] = new SudokuSquare();
             add(squares[i]);
@@ -28,35 +28,35 @@ public class SudokuRenderer extends JPanel {
         sudokujava.algorithm.General.printTiles(tiles);
         return tiles;
     }
-    
+
     public void writeSolution(byte[][] b) {
         if (b.length != 9) throw new IllegalArgumentException();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                squares[i*9 + j].setText("" + b[i][j]);
+                squares[i * 9 + j].setText("" + b[i][j]);
             }
         }
     }
-    
+
     public void reset() {
         for (SudokuSquare ss : squares) {
             ss.setText("");
             ss.setEnabled(true);
         }
     }
-    
+
     private void setBoxSize(Dimension d) {
         setPreferredSize(d);
         setMinimumSize(d);
         setMaximumSize(d);
     }
-    
+
     public void disableSquares() {
         for (SudokuSquare ss : squares) {
             ss.setEnabled(false);
         }
     }
-    
+
     public void enableSquares() {
         for (SudokuSquare ss : squares) {
             ss.setEnabled(true);

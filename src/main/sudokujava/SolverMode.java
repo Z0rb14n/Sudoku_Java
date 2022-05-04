@@ -60,7 +60,7 @@ public class SolverMode {
     SolverMode(int topLeftX, int topLeftY, int imageWidth, int imageHeight, int imageDelay) {
         this(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay, Speed.getDefault());
     }
-    
+
     public enum Speed {
         FAST('0', 0),
         MEDIUM('1', 1),
@@ -92,13 +92,14 @@ public class SolverMode {
         public char characterRepresentation() {
             return rep;
         }
+
         public static Speed getSpeed(char input) {
             for (Speed sp : Speed.values()) {
                 if (sp.rep == input) return sp;
             }
             return null;
         }
-        
+
         public boolean isGreaterThan(Speed speed) {
             return Integer.compare(this.speed, speed.speed) == 1;
         }

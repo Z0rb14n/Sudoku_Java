@@ -76,14 +76,14 @@ public class SudokuJava {
                       Speed speed) {
         this(topLeftX, topLeftY, imgWidth, imgHeight, 3000, autoType, speed);
     }
-    
-    public SudokuJava (int topLeftX,
-                       int topLeftY,
-                       int imageWidth,
-                       int imageHeight,
-                       int imageDelay,
-                       boolean autoType,
-                       Speed speed) {
+
+    public SudokuJava(int topLeftX,
+                      int topLeftY,
+                      int imageWidth,
+                      int imageHeight,
+                      int imageDelay,
+                      boolean autoType,
+                      Speed speed) {
         this.startTime = System.nanoTime();
         setupRobot();
         this.mode = new SolverMode(topLeftX, topLeftY, imageWidth, imageHeight, imageDelay, speed);
@@ -137,7 +137,7 @@ public class SudokuJava {
         solveTime = solveFinish - startRunTime;
         onFinish();
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -162,7 +162,7 @@ public class SudokuJava {
         BufferedImage bigBoi = bot.screenShot(x + IMAGE_OFFSET, y + IMAGE_OFFSET, mode.imageWidth - (2 * IMAGE_OFFSET), mode.imageHeight - (2 * IMAGE_OFFSET));
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                lol[i][j] = bigBoi.getSubimage((width*j),(height*i),width - (2 * IMAGE_OFFSET),height - (2 * IMAGE_OFFSET));
+                lol[i][j] = bigBoi.getSubimage((width * j), (height * i), width - (2 * IMAGE_OFFSET), height - (2 * IMAGE_OFFSET));
             }
         }
         for (int i = 0; i < 9; i++) {

@@ -16,6 +16,7 @@ public class App extends JFrame {
         }
         return singleton;
     }
+
     private App() {
         super("l m a o ");
         add(ap);

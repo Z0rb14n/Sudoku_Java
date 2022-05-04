@@ -82,6 +82,7 @@ class SudokuMenu extends JPanel {
     UIMode getUIMode() {
         return UIMode.getMode((String) sb.getSelectedItem());
     }
+
     private class SourceBox extends JComboBox<String> implements ItemListener {
         SourceBox() {
             super(UIMode.labels());

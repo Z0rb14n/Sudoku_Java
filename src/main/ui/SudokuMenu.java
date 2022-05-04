@@ -1,6 +1,6 @@
 package ui;
 
-import sudokujava.SolverMode.Speed;
+import sudokujava.SolverSpeed;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,7 +54,7 @@ class SudokuMenu extends JPanel {
             return im.getAutotypeEnabled();
         }
 
-        Speed getSpeed() {
+        SolverSpeed getSpeed() {
             return mm.getSpeed();
         }
 
@@ -71,7 +71,7 @@ class SudokuMenu extends JPanel {
         return menu.getAutoType();
     }
 
-    Speed getSpeed() {
+    SolverSpeed getSpeed() {
         return menu.getSpeed();
     }
 

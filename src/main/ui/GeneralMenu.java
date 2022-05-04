@@ -1,6 +1,6 @@
 package ui;
 
-import sudokujava.SolverMode.Speed;
+import sudokujava.SolverSpeed;
 
 import javax.swing.*;
 import java.awt.event.MouseEvent;
@@ -11,7 +11,7 @@ class GeneralMenu extends JPanel {
 
     GeneralMenu() {
         super();
-        add(new JLabel("Select Speed:"));
+        add(new JLabel("Select SolverSpeed:"));
         add(sc);
         add(new Button());
     }
@@ -20,15 +20,15 @@ class GeneralMenu extends JPanel {
         sc.setEnabled(mode != UIMode.FILE);
     }
 
-    Speed getSpeed() {
+    SolverSpeed getSpeed() {
         String str = (String) sc.getSelectedItem();
-        return Speed.valueOf(str);
+        return SolverSpeed.valueOf(str);
     }
 
     private class SpeedChooser extends JComboBox<String> {
         SpeedChooser() {
-            super(Speed.getLabels());
-            setSelectedItem(Speed.getDefault().toString());
+            super(SolverSpeed.getLabels());
+            setSelectedItem(SolverSpeed.getDefault().toString());
             setEditable(false);
         }
     }

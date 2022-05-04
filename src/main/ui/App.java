@@ -1,7 +1,8 @@
 package ui;
 
 import sudokujava.OCRException;
-import sudokujava.SolverMode.Speed;
+import sudokujava.SolverMode;
+import sudokujava.SolverSpeed;
 import sudokujava.SudokuJava;
 
 import javax.swing.*;
@@ -31,14 +32,14 @@ public class App extends JFrame {
         byte[][] tiles = ap.getTiles();
         UIMode mode = ap.getUIMode();
         boolean autoType = ap.getAutoType();
-        Speed speed = ap.getSelectedSpeed();
+        SolverSpeed solverSpeed = ap.getSelectedSpeed();
         String file = ap.getFile();
         if (mode == UIMode.FILE) {
             if (file.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Invalid File input.", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
-                    SudokuJava sj = new SudokuJava(file);
+                    SudokuJava sj = new SudokuJava(SolverMode.FromFile(file));
                     sj.run();
                     ap.setTiles(sj.getTiles());
                 } catch (IllegalArgumentException ex) {
@@ -51,7 +52,9 @@ public class App extends JFrame {
             }
         } else if (mode == UIMode.MANUAL) {
             try {
-                SudokuJava sj = new SudokuJava(tiles, speed);
+                SolverMode solverMode = SolverMode.FromData(tiles);
+                solverMode.setSolverSpeed(solverSpeed);
+                SudokuJava sj = new SudokuJava(solverMode);
                 sj.run();
                 ap.setTiles(sj.getTiles());
 
@@ -60,7 +63,10 @@ public class App extends JFrame {
             }
         } else if (mode == UIMode.IMAGE) {
             try {
-                SudokuJava sj = new SudokuJava(fields[0], fields[1], fields[2], fields[3], autoType, speed);
+                SolverMode solverMode = SolverMode.FromImage(fields[0], fields[1], fields[2], fields[3]);
+                solverMode.setFlag(SolverMode.AUTO_TYPE, autoType);
+                solverMode.setSolverSpeed(solverSpeed);
+                SudokuJava sj = new SudokuJava(solverMode);
                 sj.run();
                 ap.setTiles(sj.getTiles());
             } catch (IllegalArgumentException ex) {

@@ -5,7 +5,7 @@
  */
 package ui;
 
-import sudokujava.SolverMode.Speed;
+import sudokujava.SolverSpeed;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,7 +45,7 @@ class AppPanel extends JPanel {
         return sm.getFile();
     }
 
-    Speed getSelectedSpeed() {
+    SolverSpeed getSelectedSpeed() {
         return sm.getSpeed();
     }
 

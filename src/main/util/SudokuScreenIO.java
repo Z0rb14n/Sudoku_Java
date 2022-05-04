@@ -26,9 +26,9 @@ public class SudokuScreenIO {
     }
 
     public void typeValues(SolverMode mode, byte[][] tiles) {
-        final int width = Math.floorDiv(mode.imageWidth, 9);
+        final int width = Math.floorDiv(mode.getImageWidth(), 9);
         final int halfWidth = Math.floorDiv(width, 2);
-        final int height = Math.floorDiv(mode.imageHeight, 9);
+        final int height = Math.floorDiv(mode.getImageHeight(), 9);
         final int halfHeight = Math.floorDiv(height, 2);
         int x = mode.getTopLeftX() + halfWidth;
         int y = mode.getTopLeftY() + halfHeight;
@@ -49,14 +49,14 @@ public class SudokuScreenIO {
         int y = mode.getTopLeftY();
         bot.mouseMove(x, y);
         bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y);
+        bot.mouseMove(x + mode.getImageWidth(), y);
         bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y + mode.imageHeight);
+        bot.mouseMove(x + mode.getImageWidth(), y + mode.getImageHeight());
         bot.delay(200);
-        bot.mouseMove(x, y + mode.imageHeight);
-        int width = Math.floorDiv(mode.imageWidth, 9);
-        int height = Math.floorDiv(mode.imageHeight, 9);
-        BufferedImage bigBoi = bot.screenShot(x + imageOffset, y + imageOffset, mode.imageWidth - (2 * imageOffset), mode.imageHeight - (2 * imageOffset));
+        bot.mouseMove(x, y + mode.getImageHeight());
+        int width = Math.floorDiv(mode.getImageWidth(), 9);
+        int height = Math.floorDiv(mode.getImageHeight(), 9);
+        BufferedImage bigBoi = bot.screenShot(x + imageOffset, y + imageOffset, mode.getImageWidth() - (2 * imageOffset), mode.getImageHeight() - (2 * imageOffset));
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 lol[i][j] = bigBoi.getSubimage((width * j), (height * i), width - (2 * imageOffset), height - (2 * imageOffset));

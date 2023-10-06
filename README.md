@@ -7,8 +7,8 @@ Note that if it cannot properly read the data, the program will beep and stop ex
 
 ## Instructions for running
 
-There currently isn't a release or a build, so you would have to manually compile it yourself. To do that, open up the files in a Java IDE, navigate to sudokujava.ui.Main and run it.
-For a terminal based version (without a GUI or any user input), navigate to sudokujava.algorithm.SudokuJava.Main. File locations may need to be changed.
+There currently isn't a release or a build, so you would have to manually compile it yourself. To do that, open up the files in a Java IDE, navigate to `sudokujava.ui.Main` and run it.
+For a terminal based version (without a GUI or any user input), navigate to `sudokujava.algorithm.SudokuJava.Main`. File locations may need to be changed.
 
 ### Prerequisites
 

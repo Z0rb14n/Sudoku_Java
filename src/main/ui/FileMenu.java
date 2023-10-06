@@ -2,11 +2,11 @@ package ui;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
-class FileMenu extends JPanel implements MouseListener {
+class FileMenu extends JPanel implements ActionListener {
     private JLabel location = new JLabel("");
     private JButton button = new JButton("Select file");
     private static final FileFilter FILTER = new FileFilter() {
@@ -24,7 +24,7 @@ class FileMenu extends JPanel implements MouseListener {
     FileMenu() {
         super();
         add(location);
-        button.addMouseListener(this);
+        button.addActionListener(this);
         add(button);
         update(UIMode.getDefault());
     }
@@ -38,7 +38,7 @@ class FileMenu extends JPanel implements MouseListener {
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void actionPerformed(ActionEvent e) {
         JFileChooser jfc = new JFileChooser();
         jfc.setFileFilter(FILTER);
         int returnVal = jfc.showDialog(this, "Select");
@@ -46,21 +46,5 @@ class FileMenu extends JPanel implements MouseListener {
             File file = jfc.getSelectedFile();
             location.setText(file.getPath());
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
     }
 }

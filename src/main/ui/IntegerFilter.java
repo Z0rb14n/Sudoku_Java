@@ -6,17 +6,19 @@ import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 
 public class IntegerFilter extends DocumentFilter {
-    private int maxLength;
-    private boolean allowEmpty;
+    private final int maxLength;
+    private final boolean allowEmpty;
 
-    public IntegerFilter(int maxLength, boolean allowEmpty) {
+    IntegerFilter(int maxLength, boolean allowEmpty) {
         super();
         this.maxLength = maxLength;
         this.allowEmpty = allowEmpty;
     }
 
+    /**
+     * Performs string insertion if result is valid.
+     */
     @Override
-    // EFFECTS: inserts the string to given location, assuming it is valid
     public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
         Document doc = fb.getDocument();
         StringBuilder sb = new StringBuilder();
@@ -28,7 +30,12 @@ public class IntegerFilter extends DocumentFilter {
         }
     }
 
-    // EFFECTS: returns whether a string is valid text
+    /**
+     * Determines whether string is valid text: i.e. does not exceed length and empty if allowed.
+     *
+     * @param text string to test
+     * @return True if string is an integer whose length is not longer than max length; empty if allowed.
+     */
     private boolean test(String text) {
         if (text.isEmpty()) return allowEmpty;
         try {
@@ -40,8 +47,10 @@ public class IntegerFilter extends DocumentFilter {
         }
     }
 
+    /**
+     * Performs a replace operation if the text is valid.
+     */
     @Override
-    // EFFECTS: replaces text if the text is valid
     public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
         Document doc = fb.getDocument();
         StringBuilder sb = new StringBuilder();
@@ -53,8 +62,10 @@ public class IntegerFilter extends DocumentFilter {
         }
     }
 
+    /**
+     * Performs a remove operation if the text is valid.
+     */
     @Override
-    // EFFECTS: removes text if the text is valid
     public void remove(FilterBypass fb, int offset, int length) throws BadLocationException {
         Document doc = fb.getDocument();
         StringBuilder sb = new StringBuilder();

@@ -1,11 +1,14 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
-// Represents a point or a pair with x/y coordinates
+/**
+ * Utility to contain a point or pair with x/y coordinates.
+ */
 public class Pair {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     public Pair(ArrayList<Byte> lol) {
         if (lol == null || lol.size() != 2)
@@ -41,9 +44,6 @@ public class Pair {
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + this.x;
-        hash = 67 * hash + this.y;
-        return hash;
+        return Objects.hash(x, y);
     }
 }

@@ -9,7 +9,9 @@ import java.util.HashMap;
 
 import static java.awt.event.MouseEvent.*;
 
-// Represents a wrapper for the robot
+/**
+ * Convenience class that wraps Java's Robot class.
+ */
 public class RobotWrapper extends Robot {
     private static boolean isNonMac;
     private static final int NORMAL_DELAY = 20;
@@ -26,17 +28,30 @@ public class RobotWrapper extends Robot {
     private final static int DISPLAY_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
     private final static int DISPLAY_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
 
-    // Constructor. Yeah. About that..
+    /**
+     * Initializes this robot with default delay duration.
+     *
+     * @throws AWTException if input controlling is not allowed
+     */
     public RobotWrapper() throws AWTException {
         this(true);
     }
 
-    // Constructor, but a boolean if you use a delay
+    /**
+     * Initializes this robot with provided delay settings and default delay duration.
+     * @param doDelay whether a delay is performed
+     * @throws AWTException if input controlling is not allowed
+     */
     public RobotWrapper(boolean doDelay) throws AWTException {
         this(doDelay, NORMAL_DELAY);
     }
 
-    // Constructor, but a boolean if you use a delay
+    /**
+     * Initializes this robot with provided delay settings.
+     * @param doDelay whether a delay is performed
+     * @param delayAmount delay between actions
+     * @throws AWTException if input controlling is not allowed
+     */
     public RobotWrapper(boolean doDelay, int delayAmount) throws AWTException {
         super();
         initLettersNonMac();
@@ -44,8 +59,10 @@ public class RobotWrapper extends Robot {
     }
 
     //<editor-fold desc="Convenience Code">
-    // MODIFIES: this
-    // EFFECTS: initializes the keys/caps/Alts/Salts for Non-Mac operating Systems
+
+    /**
+     * Initializes keys/capital letters/alt-keys/shift-alt-key combinations for non-mac OSes.
+     */
     private static void initLettersNonMac() {
         isNonMac = true;
         initUniversal();
@@ -53,8 +70,9 @@ public class RobotWrapper extends Robot {
         System.gc();
     }
 
-    // MODIFIES: this
-    // EFFECTS: initializes the Keys/caps/ALts/Salts
+    /**
+     * Initializes keys/capital letters/alt-keys/shift-alt-key combinations for macOS.
+     */
     private static void initLetters() {
         isNonMac = false;
         initUniversal();
@@ -71,8 +89,9 @@ public class RobotWrapper extends Robot {
         System.gc();
     }
 
-    // MODIFIES: this
-    // EFFECTS: initializes the keys/caps only
+    /**
+     * Initializes (mostly) ascii characters and capital letters.
+     */
     private static void initUniversal() {
         for (char i = 'a'; i < 'z' + 1; i++) {
             Keys.put(i, i - 'a' + KeyEvent.VK_A);

@@ -33,7 +33,7 @@ public class SudokuRenderer extends JPanel {
         if (b.length != 9) throw new IllegalArgumentException();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                squares[i * 9 + j].setText("" + b[i][j]);
+                squares[i * 9 + j].setText(Byte.toString(b[i][j]));
             }
         }
     }

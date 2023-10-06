@@ -1,9 +1,11 @@
 package util;
 
+import java.util.Objects;
+
 public final class Triple {
-    private byte num;
-    private int row;
-    private int col;
+    private final byte num;
+    private final int row;
+    private final int col;
 
     public Triple(byte n, int x, int y) {
         num = n;
@@ -32,10 +34,6 @@ public final class Triple {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 13 * hash + this.num;
-        hash = 13 * hash + this.row;
-        hash = 13 * hash + this.col;
-        return hash;
+        return Objects.hash(num, row, col);
     }
 }

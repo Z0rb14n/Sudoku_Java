@@ -37,7 +37,7 @@ public class SudokuScreenIO {
                 bot.mouseMove(x + (j * width), y + (i * height));
                 bot.button1();
                 bot.delay(100);
-                bot.simplerType("" + tiles[i][j]);
+                bot.simplerType(Byte.toString(tiles[i][j]));
             }
         }
     }

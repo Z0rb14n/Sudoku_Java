@@ -117,7 +117,7 @@ public final class NakedPair {
             removeCandidatesSquare(candidates, (byte) correct.getX(), square, mode, indexes.get(index1), indexes.get(index2));
             removeCandidatesSquare(candidates, (byte) correct.getY(), square, mode, indexes.get(index1), indexes.get(index2));
         }
-        if (!(test[0] || test[1] || test[2]) && mode.showAlgorithmUnusedMessage()) {
+        if (!(test[0] || test[1] || test[2]) && !mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
             System.out.println("No Naked Pairs were found.");
         }
     }

@@ -20,7 +20,7 @@ public final class NakedSingle {
             }
         }
         if (numbers.isEmpty()) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
                 System.out.println("No Naked Singles are found.");
             }
             return;

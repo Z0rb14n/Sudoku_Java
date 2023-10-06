@@ -123,7 +123,7 @@ public final class XWing {
                 }
             }
         }
-        if (!rowT && !colT && mode.showAlgorithmUnusedMessage()) {
+        if (!rowT && !colT && !mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
             System.out.println("No X-Wings were found.");
         }
     }

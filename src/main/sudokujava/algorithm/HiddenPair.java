@@ -134,7 +134,7 @@ public final class HiddenPair {
                 }
             }
         }
-        if (!test[0] && !test[1] && !test[2] && mode.showAlgorithmUnusedMessage()) {
+        if (!test[0] && !test[1] && !test[2] && !mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
             System.out.println("No Hidden Pairs were found.");
         }
     }

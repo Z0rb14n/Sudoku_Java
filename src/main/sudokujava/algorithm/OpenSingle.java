@@ -111,7 +111,7 @@ public final class OpenSingle {
             } while (!cols.isEmpty());
         }
         if (!tests[0] && !tests[1] && !tests[2]) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (!mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
                 System.out.println("No Open Singles were found.");
             }
         }

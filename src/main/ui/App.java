@@ -47,6 +47,7 @@ public class App extends JFrame {
                 } catch (OCRException ex) {
                     JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization.", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Uncaught Exception " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -59,6 +60,7 @@ public class App extends JFrame {
                 ap.setTiles(sj.getTiles());
 
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Uncaught Exception " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else if (mode == UIMode.IMAGE) {
@@ -74,6 +76,7 @@ public class App extends JFrame {
             } catch (OCRException ex) {
                 JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Uncaught Exception " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

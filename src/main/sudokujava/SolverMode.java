@@ -36,7 +36,7 @@ public class SolverMode {
     private SudokuScreenIO ssio;
     private InputType type;
     private byte[][] tiles;
-    private boolean[] flags = new boolean[]{true, true, false};
+    private boolean[] flags = new boolean[]{true, true, false, false, false};
     private int topLeftX = Integer.MIN_VALUE;
     private int topLeftY = Integer.MIN_VALUE;
     private int imageWidth;

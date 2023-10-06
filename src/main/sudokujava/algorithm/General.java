@@ -274,18 +274,18 @@ public final class General {
             throw new IllegalArgumentException("RemoveCandidate called with invalid row and column number " + row + "," + col);
         }
         if (candidates[row - 1][col - 1].size() == 0) {
-            if (mode.showCandidateNotFoundMessage()) {
+            if (!mode.getFlag(SolverMode.HIDE_NOT_FOUND_CANDIDATE_MSG)) {
                 System.out.println("Candidate " + num + " did not exist at row " + row + ", column " + col);
             }
         }
         if (!candidates[row - 1][col - 1].contains(num)) {
-            if (mode.showCandidateNotFoundMessage()) {
+            if (!mode.getFlag(SolverMode.HIDE_NOT_FOUND_CANDIDATE_MSG)) {
                 System.out.println("Candidate " + num + " did not exist at row " + row + ", column " + col);
             }
         } else {
             candidates[row - 1][col - 1].remove((Byte) num);
             candidates[row - 1][col - 1].trimToSize();
-            if (mode.showCandidateRemovalMessage()) {
+            if (mode.getFlag(SolverMode.SHOW_CANDIDATE_REMOVAL_MSG)) {
                 System.out.println("Candidate " + num + " removed from (" + row + "," + col + ")");
             }
         }

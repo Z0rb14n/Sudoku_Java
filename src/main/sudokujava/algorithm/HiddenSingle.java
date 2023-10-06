@@ -81,7 +81,7 @@ public final class HiddenSingle {
             }
         }
         if (nums.empty()) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (!mode.getFlag(SolverMode.HIDE_NO_ALGORITHM_FOUND_MSG)) {
                 System.out.println("No Hidden Singles were found.");
             }
             return;

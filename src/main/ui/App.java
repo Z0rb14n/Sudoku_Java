@@ -1,14 +1,14 @@
 package ui;
 
-import sudokujava.OCRException;
 import sudokujava.SolverMode.Speed;
 import sudokujava.SudokuJava;
+import util.OCRException;
 
 import javax.swing.*;
 
 public class App extends JFrame {
     private static App singleton;
-    private AppPanel ap = new AppPanel();
+    private final AppPanel ap = new AppPanel();
 
     public static App getInstance() {
         if (singleton == null) {

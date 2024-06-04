@@ -87,9 +87,6 @@ public class SudokuCLI {
     }
 
     private static SudokuJava generateFileSettings(HashMap<String, String[]> param, SolverSpeed speed) {
-        if (param.containsKey(AUTOTYPE_TAG)) {
-            System.out.println("Unused argument: " + AUTOTYPE_TAG + "; autotype not available for file");
-        }
         if (param.containsKey(DELAY_TAG)) {
             System.out.println("Unused argument " + DELAY_TAG + "; delay not applicable to file");
         }
@@ -123,6 +120,7 @@ public class SudokuCLI {
         else sudokuJava = generateImageSettings(param, speed);
         sudokuJava.setCheckValidity(param.containsKey(DEBUG_TAG));
         if (param.containsKey(OUTPUT_FILE_TAG)) sudokuJava.setOutputFile(param.get(OUTPUT_FILE_TAG)[0]);
+        sudokuJava.setAutoType(param.containsKey(AUTOTYPE_TAG));
         return sudokuJava;
     }
 

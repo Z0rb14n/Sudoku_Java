@@ -83,6 +83,10 @@ public class SudokuJava {
         this.outputFile = file;
     }
 
+    public void setAutoType(boolean val) {
+        this.autoType = val;
+    }
+
     public byte[][] getTiles() {
         return tiles;
     }

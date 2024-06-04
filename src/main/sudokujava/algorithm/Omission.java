@@ -12,20 +12,16 @@ public final class Omission {
      * clear row. Same with columns. Conversely, if the row is concentrated in
      * one block, clear the block.
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
         boolean[] test = new boolean[3];
         //perspective of row
         for (int row = 1; row < 10; row++) {
             if (numbersInRow(tiles, row) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidates[row - 1]);
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidates[row - 1]);
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] != 2 && count[num - 1] != 3) {
+                if (counts[num] != 2 && counts[num] != 3) {
                     continue;
                 }
                 ArrayList<Integer> columns = new ArrayList<>();
@@ -34,7 +30,7 @@ public final class Omission {
                         columns.add(column);
                     }
                 }
-                if (columns.size() != count[num - 1]) {
+                if (columns.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 if (findSquareNum(row, columns.get(0)) != findSquareNum(row, columns.get(columns.size() - 1))) {
@@ -53,13 +49,9 @@ public final class Omission {
             if (numbersInColumn(tiles, column) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidatesColumn(candidates, column));
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidatesColumn(candidates, column));
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] < 2 || count[num - 1] > 3) {
+                if (counts[num] < 2 || counts[num] > 3) {
                     continue;
                 }
                 ArrayList<Integer> rows = new ArrayList<>();
@@ -68,7 +60,7 @@ public final class Omission {
                         rows.add(row);
                     }
                 }
-                if (rows.size() != count[num - 1]) {
+                if (rows.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 if ((int) Math.ceil((float) rows.get(0) / 3) != (int) Math.ceil((float) rows.get(rows.size() - 1) / 3)) {
@@ -87,13 +79,9 @@ public final class Omission {
             if (numbersInSquare(tiles, squarenum) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidatesSquare(candidates, squarenum));
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidatesSquare(candidates, squarenum));
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] < 2 || count[num - 1] > 3) {
+                if (counts[num] < 2 || counts[num] > 3) {
                     continue;
                 }
                 ArrayList<Integer> indexes = new ArrayList<>();
@@ -102,7 +90,7 @@ public final class Omission {
                         indexes.add(index);
                     }
                 }
-                if (indexes.size() != count[num - 1]) {
+                if (indexes.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 boolean rowR = false;
@@ -153,7 +141,7 @@ public final class Omission {
      * @param squarenum  square number (1-9) to remove from
      * @param exceptions exceptions (i.e. numbers to leave out)
      */
-    private static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions) {
+    private static void removeCandidatesSquare(Candidates[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesSquare with invalid param num: " + num);
         }

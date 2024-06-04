@@ -2,8 +2,6 @@ package sudokujava.algorithm;
 
 import sudokujava.SolverSpeed;
 
-import java.util.ArrayList;
-
 import static sudokujava.SolverSpeed.*;
 
 /**
@@ -23,8 +21,7 @@ public class Solver {
             solveTime = solveFinish - startTime;
             return;
         }
-        @SuppressWarnings("unchecked")
-        ArrayList<Byte>[][] candidates = (ArrayList<Byte>[][]) new ArrayList[9][9];
+        Candidates[][] candidates = new Candidates[9][9];
         CandidateGeneration.generate(tiles, candidates);
         boolean complete = false;
 

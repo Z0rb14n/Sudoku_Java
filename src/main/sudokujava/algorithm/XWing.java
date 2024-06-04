@@ -1,28 +1,22 @@
 package sudokujava.algorithm;
 
-import java.util.ArrayList;
-
 import static sudokujava.algorithm.General.*;
 
 public final class XWing {
     /**
      * X-Wing solver - essentially pairs in rows, kill everything in column
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
         boolean rowT = false;
         boolean colT = false;
         for (int row = 1; row < 10; row++) {
             if (numbersInRow(tiles, row) > 7) {
                 continue;
             }
-            ArrayList<Byte> thing = concatCandidates(candidates[row - 1]);
-            byte[] count = new byte[9];
+            byte[] counts = concatCandidates(candidates[row - 1]);
             int[] col1 = new int[2];
-            for (Byte lol : thing) {
-                count[lol - 1]++;
-            }
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] != 2) {
+                if (counts[num] != 2) {
                     continue;
                 }
                 for (int col = 1; col < 10; col++) {
@@ -38,12 +32,8 @@ public final class XWing {
                     if (numbersInRow(tiles, row2) > 7) {
                         continue;
                     }
-                    ArrayList<Byte> cat = concatCandidates(candidates[row2]);
-                    byte[] counts = new byte[9];
-                    for (Byte lol : cat) {
-                        counts[lol - 1]++;
-                    }
-                    if (counts[num - 1] != 2) {
+                    byte[] cat = concatCandidates(candidates[row2]);
+                    if (cat[num] != 2) {
                         break;
                     }
                     int[] col2 = new int[2];
@@ -70,14 +60,10 @@ public final class XWing {
             if (numbersInColumn(tiles, col) > 7) {
                 continue;
             }
-            ArrayList<Byte> thing = concatCandidates(candidatesColumn(candidates, col));
-            byte[] count = new byte[9];
+            byte[] firstCounts = concatCandidates(candidatesColumn(candidates, col));
             int[] row1 = new int[2];
-            for (Byte lol : thing) {
-                count[lol - 1]++;
-            }
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] != 2) {
+                if (firstCounts[num] != 2) {
                     continue;
                 }
                 for (int row = 1; row < 10; row++) {
@@ -93,12 +79,8 @@ public final class XWing {
                     if (numbersInRow(tiles, col2) > 7) {
                         continue;
                     }
-                    ArrayList<Byte> cat = concatCandidates(candidatesColumn(candidates, col2));
-                    byte[] counts = new byte[9];
-                    for (Byte lol : cat) {
-                        counts[lol - 1]++;
-                    }
-                    if (counts[num - 1] != 2) {
+                    byte[] secondCounts = concatCandidates(candidatesColumn(candidates, col2));
+                    if (secondCounts[num] != 2) {
                         break;
                     }
                     int[] row2 = new int[2];

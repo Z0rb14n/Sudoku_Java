@@ -11,15 +11,16 @@ public final class NakedPair {
     /**
      * Two tiles having the same candidates (pairs of candidates)
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
-        boolean[] test = new boolean[3];
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
+        boolean filled = false;
         //check in row
         for (int row = 1; row < 10; row++) {
             ArrayList<Pair> lol = new ArrayList<>();
             ArrayList<Integer> cols = new ArrayList<>();
             for (int col = 0; col < 9; col++) {
                 if (candidates[row - 1][col].size() == 2) {
-                    lol.add(new Pair(candidates[row - 1][col].get(0), candidates[row - 1][col].get(1)));
+                    byte[] cand = candidates[row - 1][col].toArray();
+                    lol.add(new Pair(cand[0], cand[1]));
                     cols.add(col);
                 }
             }
@@ -27,7 +28,7 @@ public final class NakedPair {
             if (pairs.size() < 2 || pairs.size() >= lol.size()) {
                 continue;
             }
-            test[0] = true;
+            filled = true;
             Pair correct = null;
             int index1 = -1;
             int index2 = -1;
@@ -53,7 +54,8 @@ public final class NakedPair {
             ArrayList<Integer> rows = new ArrayList<>();
             for (int row = 0; row < 9; row++) {
                 if (candidates[row][column - 1].size() == 2) {
-                    lol.add(new Pair(candidates[row][column - 1].get(0), candidates[row][column - 1].get(1)));
+                    byte[] cand = candidates[row][column - 1].toArray();
+                    lol.add(new Pair(cand[0], cand[1]));
                     rows.add(row);
                 }
             }
@@ -61,7 +63,7 @@ public final class NakedPair {
             if (pairs.size() < 2 || pairs.size() >= lol.size()) {
                 continue;
             }
-            test[1] = true;
+            filled = true;
             Pair correct = null;
             int index1 = -1;
             int index2 = -1;
@@ -88,7 +90,8 @@ public final class NakedPair {
                 int row = findRowNumInSquare(square, index);
                 int column = findColumnNumInSquare(square, index);
                 if (candidates[row - 1][column - 1].size() == 2) {
-                    lol.add(new Pair(candidates[row - 1][column - 1]));
+                    byte[] cand = candidates[row - 1][column - 1].toArray();
+                    lol.add(new Pair(cand[0], cand[1]));
                     indexes.add(index);
                 }
             }
@@ -96,7 +99,7 @@ public final class NakedPair {
             if (pairs.size() < 2 || pairs.size() >= lol.size()) {
                 continue;
             }
-            test[2] = true;
+            filled = true;
             Pair correct = null;
             int index1 = -1;
             int index2 = -1;
@@ -116,7 +119,7 @@ public final class NakedPair {
             removeCandidatesSquare(candidates, (byte) correct.getX(), square, indexes.get(index1), indexes.get(index2));
             removeCandidatesSquare(candidates, (byte) correct.getY(), square, indexes.get(index1), indexes.get(index2));
         }
-        if (!(test[0] || test[1] || test[2]) && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
+        if (!filled && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No Naked Pairs were found.");
         }
     }

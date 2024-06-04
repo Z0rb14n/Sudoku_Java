@@ -2,7 +2,6 @@ package sudokujava.algorithm;
 
 import util.Pair;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import static sudokujava.algorithm.General.*;
@@ -11,7 +10,7 @@ public final class OpenSingle {
     /**
      * Fill open singles (i.e. 8 numbers in row/col/squ)
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
         boolean filled = false;
         Stack<Integer> rows = new Stack<>();
         for (int i = 1; i < 10; i++) {

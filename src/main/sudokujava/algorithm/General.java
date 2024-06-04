@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import java.util.ArrayList;
-
 // FOR ALL METHODS, REQUIRES tiles/candidates PARAMETER to be VALID SUDOKU PUZZLE/CANDIDATES
 // Represents general convenience methods for all algorithms
 public final class General {
@@ -21,12 +19,13 @@ public final class General {
      * @param a array of list of candidates
      * @return concatenated candidates
      */
-    static ArrayList<Byte> concatCandidates(ArrayList<Byte>[] a) {
-        ArrayList<Byte> temp = new ArrayList<>();
-        for (ArrayList<Byte> a1 : a) {
-            temp.addAll(a1);
+    static byte[] concatCandidates(Candidates[] a) {
+        byte[] sums = new byte[10];
+        for (Candidates c : a) {
+            byte[] data = c.toArray();
+            for (byte b : data) sums[b]++;
         }
-        return temp;
+        return sums;
     }
 
     /**
@@ -35,15 +34,13 @@ public final class General {
      * @param colnum column number to access
      * @return array of ArrayList of candidates.
      */
-    static ArrayList<Byte>[] candidatesColumn(ArrayList<Byte>[][] candidates, int colnum) {
+    static Candidates[] candidatesColumn(Candidates[][] candidates, int colnum) {
         if (colnum < 1 || colnum > 9) {
             throw new IllegalArgumentException("candidatesColumn called with invalid arugment: " + colnum);
         }
-        @SuppressWarnings("unchecked")
-        ArrayList<Byte>[] lol = (ArrayList<Byte>[]) new ArrayList[9];
+        Candidates[] lol = new Candidates[9];
         for (int i = 0; i < 9; i++) {
             lol[i] = candidates[i][colnum - 1];
-            lol[i].trimToSize();
         }
         return lol;
     }
@@ -54,12 +51,11 @@ public final class General {
      * @param squarenum square num to access
      * @return array of ArrayList of candidates.
      */
-    static ArrayList<Byte>[] candidatesSquare(ArrayList<Byte>[][] candidates, int squarenum) {
+    static Candidates[] candidatesSquare(Candidates[][] candidates, int squarenum) {
         if (squarenum < 1 || squarenum > 9) {
             throw new IllegalArgumentException("candidatesSquare called with invalid arugment: " + squarenum);
         }
-        @SuppressWarnings("unchecked")
-        ArrayList<Byte>[] lol = (ArrayList<Byte>[]) new ArrayList[9];
+        Candidates[] lol = new Candidates[9];
         int temp = (int) Math.floor(((float) (squarenum - 1)) / 3);
         int temp1 = (squarenum - 1) % 3;
         for (int i = 0; i < 3; i++) {
@@ -182,22 +178,7 @@ public final class General {
         if (squarenum < 1 || squarenum > 9 || num < 0 || num > 8) {
             throw new IllegalArgumentException("findRowNumInSquare called with invalid arguments " + squarenum + "," + num);
         }
-        int temp;
-        if (squarenum < 4) {
-            temp = 0;
-        } else if (squarenum < 7) {
-            temp = 3;
-        } else {
-            temp = 6;
-        }
-        if (Math.floorDiv(num, 3) == 0) {
-            temp++;
-        } else if (Math.floorDiv(num, 3) == 1) {
-            temp += 2;
-        } else if (Math.floorDiv(num, 3) == 2) {
-            temp += 3;
-        }
-        return temp;
+        return Math.floorDiv(squarenum - 1, 3) * 3 + Math.floorDiv(num, 3) + 1;
     }
 
     /**
@@ -211,21 +192,7 @@ public final class General {
         if (squarenum < 1 || squarenum > 9 || num < 0 || num > 8) {
             throw new IllegalArgumentException("findColumnNumInSquare called with invalid arguments " + squarenum + "," + num);
         }
-        int temp = 0;
-        if (squarenum % 3 == 2) {
-            temp = 3;
-        } else if (squarenum % 3 == 0) {
-            temp = 6;
-        }
-
-        if ((num + 1) % 3 == 1) {
-            temp++;
-        } else if ((num + 1) % 3 == 2) {
-            temp += 2;
-        } else if ((num + 1) % 3 == 0) {
-            temp += 3;
-        }
-        return temp;
+        return ((squarenum + 2) % 3) * 3 + (num % 3) + 1;
     }
 
     /**
@@ -236,9 +203,7 @@ public final class General {
      * @return integer of square number
      */
     public static int findSquareNum(int row, int col) {
-        int colSquare = (int) Math.ceil(col / 3.0f);
-        int rowSquare = (int) Math.ceil(row / 3.0f) - 1;
-        return rowSquare * 3 + colSquare;
+        return Math.floorDiv(row - 1, 3) * 3 + Math.floorDiv(col - 1, 3) + 1;
     }
 
     /**
@@ -248,12 +213,15 @@ public final class General {
      * @param row row of number (1-9)
      * @param col column of number (1-9)
      */
-    static void fillNumber(byte[][] tiles, ArrayList<Byte>[][] candidates, byte num, int row, int col) {
+    static void fillNumber(byte[][] tiles, Candidates[][] candidates, byte num, int row, int col) {
         if (num < 1 || num > 9 || row < 1 || row > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("fillNumber called with invalid row and column number " + row + "," + col);
         }
         if (tiles[row - 1][col - 1] != 0) {
-            throw new IllegalArgumentException("fillNumber called on non-zero tile.");
+            if (tiles[row - 1][col - 1] == num) {
+                System.err.println("Called fill number with same value!!");
+            }
+            throw new IllegalArgumentException("fillNumber called on non-zero, non-identical tile");
         }
         tiles[row - 1][col - 1] = num;
         candidates[row - 1][col - 1].clear();
@@ -269,7 +237,7 @@ public final class General {
      * @param row row number (1-9)
      * @param col column number (1-9)
      */
-    static void removeCandidate(ArrayList<Byte>[][] candidates, byte num, int row, int col) {
+    static void removeCandidate(Candidates[][] candidates, byte num, int row, int col) {
         if (num < 1 || num > 9 || row < 1 || row > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("RemoveCandidate called with invalid row and column number " + row + "," + col);
         }
@@ -283,8 +251,7 @@ public final class General {
                 System.out.println("Candidate " + num + " did not exist at row " + row + ", column " + col);
             }
         } else {
-            candidates[row - 1][col - 1].remove((Byte) num);
-            candidates[row - 1][col - 1].trimToSize();
+            candidates[row - 1][col - 1].remove(num);
             if (AlgorithmLogSettings.getInstance().shouldPrintCandidateRemoval()) {
                 System.out.println("Candidate " + num + " removed from (" + row + "," + col + ")");
             }
@@ -297,7 +264,7 @@ public final class General {
      * @param num number to remove
      * @param row row number (1-9)
      */
-    private static void removeCandidateRow(ArrayList<Byte>[][] candidates, byte num, int row) {
+    private static void removeCandidateRow(Candidates[][] candidates, byte num, int row) {
         if (num < 1 || num > 9 || row < 1 || row > 9) {
             throw new IllegalArgumentException("RemoveCandidateRow called with invalid row number " + row);
         }
@@ -313,7 +280,7 @@ public final class General {
      * @param rownum     row number (1-9)
      * @param exceptions list of column number exceptions, (1-9)
      */
-    static void removeCandidatesRow(ArrayList<Byte>[][] candidates, byte num, int rownum, int... exceptions) {
+    static void removeCandidatesRow(Candidates[][] candidates, byte num, int rownum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesRow with invalid param num: " + num);
         }
@@ -340,7 +307,7 @@ public final class General {
      * @param num number to remove
      * @param col column number (1-9)
      */
-    private static void removeCandidateCol(ArrayList<Byte>[][] candidates, byte num, int col) {
+    private static void removeCandidateCol(Candidates[][] candidates, byte num, int col) {
         if (num < 1 || num > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("RemoveCandidateCol called with invalid column number " + col);
         }
@@ -357,23 +324,19 @@ public final class General {
      * @param colnum     column number (1-9)
      * @param exceptions Row number exceptions (1-9)
      */
-    static void removeCandidatesColumn(ArrayList<Byte>[][] candidates, byte num, int colnum, int... exceptions) {
+    static void removeCandidatesColumn(Candidates[][] candidates, byte num, int colnum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesColumn with invalid param num: " + num);
         }
         if (colnum < 1 || colnum > 9) {
             throw new IllegalArgumentException("Called removeCandidatesColumn with invalid param colnum: " + colnum);
         }
+        outer:
         for (int row = 1; row < 10; row++) {
-            boolean getOut = false;
             for (int lol : exceptions) {
                 if (lol == row) {
-                    getOut = true;
-                    break;
+                    continue outer;
                 }
-            }
-            if (getOut) {
-                continue;
             }
             removeCandidate(candidates, num, row, colnum);
         }
@@ -385,7 +348,7 @@ public final class General {
      * @param num       number to remove
      * @param squarenum square number of box (1-9)
      */
-    private static void removeCandidateBox(ArrayList<Byte>[][] candidates, byte num, int squarenum) {
+    private static void removeCandidateBox(Candidates[][] candidates, byte num, int squarenum) {
         if (num < 1 || num > 9 || squarenum < 1 || squarenum > 9) {
             throw new IllegalArgumentException("RemoveCandidateBox called with invalid square number " + squarenum);
         }
@@ -402,7 +365,7 @@ public final class General {
      * @param squarenum  square number (1-9) to remove from
      * @param exceptions exceptions (i.e. numbers to leave out, 0-8)
      */
-    static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, int... exceptions) {
+    static void removeCandidatesSquare(Candidates[][] candidates, byte num, int squarenum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesSquare with invalid param num: " + num);
         }
@@ -426,7 +389,7 @@ public final class General {
         }
     }
 
-    static void crash(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    static void crash(byte[][] tiles, Candidates[][] candidates) {
         printTiles(tiles);
         printCandidates(candidates);
         throw new RuntimeException();
@@ -441,15 +404,15 @@ public final class General {
         }
     }
 
-    private static void printCandidates(ArrayList<Byte>[][] candidates) {
+    private static void printCandidates(Candidates[][] candidates) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 System.out.print("[");
-                for (int k = 0; k < candidates[i][j].size(); k++) {
-                    if (k != 0) {
-                        System.out.print(", ");
-                    }
-                    System.out.print(candidates[i][j].get(k));
+                boolean printed = false;
+                for (Byte b : candidates[i][j]) {
+                    if (printed) System.out.println(", ");
+                    System.out.print(b);
+                    printed = true;
                 }
                 System.out.print("] ");
             }

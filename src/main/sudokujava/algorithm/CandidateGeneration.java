@@ -3,11 +3,11 @@ package sudokujava.algorithm;
 import java.util.ArrayList;
 
 public class CandidateGeneration {
-    public static void generate(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void generate(byte[][] tiles, Candidates[][] candidates) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (tiles[i][j] != 0) {
-                    candidates[i][j] = new ArrayList<>(0);
+                    candidates[i][j] = new Candidates();
                     continue;
                 }
                 ArrayList<Byte> temp = new ArrayList<>();
@@ -19,7 +19,7 @@ public class CandidateGeneration {
                         temp.add(kek);
                     }
                 }
-                candidates[i][j] = temp;
+                candidates[i][j] = new Candidates(temp);
             }
         }
     }

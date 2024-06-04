@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import java.util.ArrayList;
-
 import static sudokujava.algorithm.General.crash;
 
 public final class DebugChecks {
@@ -11,7 +9,7 @@ public final class DebugChecks {
      * @param tiles      tile array
      * @param candidates candidate array
      */
-    public static void checkNonemptyCandidates(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void checkNonemptyCandidates(byte[][] tiles, Candidates[][] candidates) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (tiles[i][j] == 0 && candidates[i][j].isEmpty()) {
@@ -24,7 +22,7 @@ public final class DebugChecks {
     /**
      * Advanced check valid - does not check whether number exists in block
      */
-    public static void checkValid(byte[][] tiles, ArrayList<Byte>[][] candidates) {
+    public static void checkValid(byte[][] tiles, Candidates[][] candidates) {
         checkNonemptyCandidates(tiles, candidates);
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {

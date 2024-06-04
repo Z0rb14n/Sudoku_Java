@@ -1,5 +1,7 @@
 package sudokujava.algorithm;
 
+import util.Pair;
+
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -10,37 +12,21 @@ public final class OpenSingle {
      * Fill open singles (i.e. 8 numbers in row/col/squ)
      */
     public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
-        boolean[] tests = new boolean[3];
+        boolean filled = false;
         Stack<Integer> rows = new Stack<>();
         for (int i = 1; i < 10; i++) {
             if (numbersInRow(tiles, i) == 8) {
                 rows.push(i);
             }
         }
-        if (!rows.isEmpty()) {
-            tests[0] = true;
-            do {
-                int row = rows.pop();
-                boolean broken = false;
-                byte number = 0;
-                for (byte num = 1; num < 10; num++) {
-                    if (arrayDoesNotContain(tiles[row - 1], num)) {
-                        number = num;
-                        broken = true;
-                        break;
-                    }
-                }
-                if (!broken) {
-                    throw new IllegalArgumentException("AAAAAAAAAAAAAAA");
-                }
-                for (int i = 0; i < 9; i++) {
-                    if (tiles[row - 1][i] == 0) {
-                        System.out.println("Filled Open Single " + number + ", row " + row + ", column " + (i + 1));
-                        fillNumber(tiles, candidates, number, row, i + 1);
-                        break;
-                    }
-                }
-            } while (!rows.isEmpty());
+        if (!rows.isEmpty()) filled = true;
+        while (!rows.isEmpty()) {
+            int row = rows.pop();
+            Pair pair = whichMissing(tiles[row - 1]);
+            byte number = (byte) pair.getX();
+            int index = pair.getY();
+            System.out.println("Filled Open Single " + number + ", row " + row + ", column " + (index + 1));
+            fillNumber(tiles, candidates, number, row, index + 1);
         }
         Stack<Integer> cols = new Stack<>();
         for (int i = 1; i < 10; i++) {
@@ -48,31 +34,15 @@ public final class OpenSingle {
                 cols.push(i);
             }
         }
-        if (!cols.isEmpty()) {
-            tests[1] = true;
-            do {
-                int col = cols.pop();
-                boolean broken = false;
-                byte number = 0;
-                byte[] thing = findColumn(tiles, col);
-                for (byte num = 1; num < 10; num++) {
-                    if (arrayDoesNotContain(thing, num)) {
-                        number = num;
-                        broken = true;
-                        break;
-                    }
-                }
-                if (!broken) {
-                    throw new IllegalArgumentException("AAAAAAAAAAAAAAA");
-                }
-                for (int i = 0; i < 9; i++) {
-                    if (tiles[i][col - 1] == 0) {
-                        System.out.println("Filled Open Single " + number + ", row " + (i + 1) + ", column " + col);
-                        fillNumber(tiles, candidates, number, i + 1, col);
-                        break;
-                    }
-                }
-            } while (!cols.isEmpty());
+        if (!cols.isEmpty()) filled = true;
+        while (!cols.isEmpty()) {
+            int col = cols.pop();
+            byte[] column = findColumn(tiles, col);
+            Pair pair = whichMissing(column);
+            byte number = (byte) pair.getX();
+            int index = pair.getY();
+            System.out.println("Filled Open Single " + number + ", row " + (index + 1) + ", column " + col);
+            fillNumber(tiles, candidates, number, index + 1, col);
         }
         Stack<Integer> boxs = new Stack<>();
         for (int i = 1; i < 10; i++) {
@@ -80,38 +50,37 @@ public final class OpenSingle {
                 boxs.push(i);
             }
         }
-        if (!boxs.isEmpty()) {
-            tests[2] = true;
-            do {
-                int box = boxs.pop();
-                boolean broken = false;
-                byte number = 0;
-                byte[] thing = findSquare(tiles, box);
-                for (byte num = 1; num < 10; num++) {
-                    if (arrayDoesNotContain(thing, num)) {
-                        number = num;
-                        broken = true;
-                        break;
-                    }
-                }
-                if (!broken) {
-                    throw new IllegalArgumentException("AAAAAAAAAAAAAAA");
-                }
-                for (int i = 0; i < 9; i++) {
-                    if (tiles[findRowNumInSquare(box, i) - 1][findColumnNumInSquare(box, i) - 1] == 0) {
-                        int row = findRowNumInSquare(box, i);
-                        int col = findColumnNumInSquare(box, i);
-                        System.out.println("Filled Open Single " + number + ", row " + row + ", column " + col);
-                        fillNumber(tiles, candidates, number, row, col);
-                        break;
-                    }
-                }
-            } while (!cols.isEmpty());
+        if (!boxs.isEmpty()) filled = true;
+        while (!boxs.isEmpty()) {
+            int box = boxs.pop();
+            byte[] square = findSquare(tiles, box);
+            Pair pair = whichMissing(square);
+            byte number = (byte) pair.getX();
+            int index = pair.getY();
+            int row = findRowNumInSquare(box, index);
+            int col = findColumnNumInSquare(box, index);
+            System.out.println("Filled Open Single " + number + ", row " + row + ", column " + col);
+            fillNumber(tiles, candidates, number, row, col);
         }
-        if (!tests[0] && !tests[1] && !tests[2]) {
-            if (AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
-                System.out.println("No Open Singles were found.");
-            }
+        if (!filled && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
+            System.out.println("No Open Singles were found.");
         }
+    }
+
+    /**
+     * Given an array of values from [1-9] with exactly one value 0, find the missing value.
+     *
+     * @param data Unique values of 0-9; exactly one value 0
+     * @return Pair of (missing value, index)
+     */
+    private static Pair whichMissing(byte[] data) {
+        int sum = 0;
+        int index = -1;
+        for (int i = 0; i < data.length; i++) {
+            byte b = data[i];
+            if (b == 0) index = i;
+            sum += b;
+        }
+        return new Pair(45 - sum, index);
     }
 }

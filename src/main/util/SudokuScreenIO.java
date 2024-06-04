@@ -3,32 +3,36 @@ package util;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import sudokujava.OCRException;
-import sudokujava.SolverMode;
+import net.sourceforge.tess4j.util.ImageIOHelper;
+import sudokujava.ImageSudokuFile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class SudokuScreenIO {
     private static final ITesseract instance = new Tesseract();
     public static int imageOffset = 2;
-    private RobotWrapper bot;
+    private final RobotWrapper bot;
+
+    public boolean printReadCharacter = false;
+    public int delayBetweenClicksMs = 100;
+    public int delayShowBoxMs = 200;
 
     public SudokuScreenIO() {
         try {
             bot = new RobotWrapper();
         } catch (java.awt.AWTException e) {
-            System.err.println("Could not initialize robot.");
-            e.printStackTrace();
-            throw new OCRException();
+            throw new OCRException("Could not initialize robot", e);
         }
         instance.setDatapath("tessdata");
     }
 
-    public void typeValues(SolverMode mode, byte[][] tiles) {
-        final int width = Math.floorDiv(mode.imageWidth, 9);
+    public void typeValues(ImageSudokuFile mode, byte[][] tiles) {
+        final int width = Math.floorDiv(mode.getImageWidth(), 9);
         final int halfWidth = Math.floorDiv(width, 2);
-        final int height = Math.floorDiv(mode.imageHeight, 9);
+        final int height = Math.floorDiv(mode.getImageHeight(), 9);
         final int halfHeight = Math.floorDiv(height, 2);
         int x = mode.getTopLeftX() + halfWidth;
         int y = mode.getTopLeftY() + halfHeight;
@@ -36,57 +40,55 @@ public class SudokuScreenIO {
             for (int j = 0; j < 9; j++) {
                 bot.mouseMove(x + (j * width), y + (i * height));
                 bot.button1();
-                bot.delay(100);
+                bot.delay(delayBetweenClicksMs);
                 bot.simplerType(Byte.toString(tiles[i][j]));
             }
         }
     }
 
-    public byte[][] readTiles(SolverMode mode) {
-        BufferedImage[][] lol = new BufferedImage[9][9];
+    public byte[][] readTiles(int topLeftX,
+                              int topLeftY,
+                              int imageWidth,
+                              int imageHeight) {
         byte[][] tiles = new byte[9][9];
-        int x = mode.getTopLeftX();
-        int y = mode.getTopLeftY();
-        bot.mouseMove(x, y);
-        bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y);
-        bot.delay(200);
-        bot.mouseMove(x + mode.imageWidth, y + mode.imageHeight);
-        bot.delay(200);
-        bot.mouseMove(x, y + mode.imageHeight);
-        int width = Math.floorDiv(mode.imageWidth, 9);
-        int height = Math.floorDiv(mode.imageHeight, 9);
-        BufferedImage bigBoi = bot.screenShot(x + imageOffset, y + imageOffset, mode.imageWidth - (2 * imageOffset), mode.imageHeight - (2 * imageOffset));
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                lol[i][j] = bigBoi.getSubimage((width * j), (height * i), width - (2 * imageOffset), height - (2 * imageOffset));
-            }
+        bot.mouseMove(topLeftX, topLeftY);
+        bot.delay(delayShowBoxMs);
+        bot.mouseMove(topLeftX + imageWidth, topLeftY);
+        bot.delay(delayShowBoxMs);
+        bot.mouseMove(topLeftX + imageWidth, topLeftY + imageHeight);
+        bot.delay(delayShowBoxMs);
+        bot.mouseMove(topLeftX, topLeftY + imageHeight);
+        int width = Math.floorDiv(imageWidth, 9);
+        int height = Math.floorDiv(imageHeight, 9);
+        int actualImageWidth = imageWidth - (2 * imageOffset);
+        int actualImageHeight = imageHeight - (2 * imageOffset);
+        BufferedImage puzzle = bot.screenShot(topLeftX + imageOffset, topLeftY + imageOffset, actualImageWidth, actualImageHeight);
+        ByteBuffer imgData;
+        int pixelSize = puzzle.getColorModel().getPixelSize();
+        try {
+            imgData = ImageIOHelper.getImageByteBuffer(puzzle);
+        } catch (IOException ex) {
+            throw new OCRException("Failed to create image buffer", ex);
         }
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 try {
-                    String result = instance.doOCR(lol[i][j]).trim();
-                    result = result.replaceAll("([\\s]+|[\\n]+|[|]+)", "");
-                    if (result.isEmpty()) {
-                        System.out.print("Blank char.");
-                        tiles[i][j] = 0;
-                        continue;
+                    Rectangle rect = new Rectangle(width * j, height * i, width - (2 * imageOffset), height - (2 * imageOffset));
+                    String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, rect, pixelSize);
+                    result = result.replaceAll("\\s+|\\n+|\\|+", "");
+                    if (printReadCharacter) System.out.println(result);
+                    if (!result.isEmpty()) {
+                        try {
+                            tiles[i][j] = Byte.parseByte(result);
+                        } catch (NumberFormatException e) {
+                            throw new OCRException("Invalid characters in OCR: " + result);
+                        }
                     }
-                    try {
-                        tiles[i][j] = Byte.parseByte(result);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Invalid characters in OCR: " + result + ", length: " + result.length());
-                        Toolkit.getDefaultToolkit().beep();
-                        throw new OCRException();
-                    }
-                    System.out.println(result);
                 } catch (TesseractException e) {
-                    e.printStackTrace();
-                    throw new OCRException();
+                    throw new OCRException(e);
                 }
             }
         }
         return tiles;
     }
-
 }

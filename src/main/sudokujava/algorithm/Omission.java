@@ -1,6 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Pair;
 
 import java.util.ArrayList;
@@ -13,20 +12,16 @@ public final class Omission {
      * clear row. Same with columns. Conversely, if the row is concentrated in
      * one block, clear the block.
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
-        boolean[] test = new boolean[3];
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
+        boolean filled = false;
         //perspective of row
         for (int row = 1; row < 10; row++) {
             if (numbersInRow(tiles, row) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidates[row - 1]);
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidates[row - 1]);
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] != 2 && count[num - 1] != 3) {
+                if (counts[num] != 2 && counts[num] != 3) {
                     continue;
                 }
                 ArrayList<Integer> columns = new ArrayList<>();
@@ -35,32 +30,28 @@ public final class Omission {
                         columns.add(column);
                     }
                 }
-                if (columns.size() != count[num - 1]) {
+                if (columns.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 if (findSquareNum(row, columns.get(0)) != findSquareNum(row, columns.get(columns.size() - 1))) {
                     continue;
                 }
-                test[0] = true;
+                filled = true;
                 System.out.println("Row Omission " + num + " at row " + row + ", columns " + columns.get(0) + "-" + columns.get(columns.size() - 1) + ".");
                 ArrayList<Pair> kek = new ArrayList<>();
                 for (int lolmao : columns) {
                     kek.add(new Pair(row, lolmao));
                 }
-                removeCandidatesSquare(candidates, num, findSquareNum(row, columns.get(0)), kek, mode);
+                removeCandidatesSquare(candidates, num, findSquareNum(row, columns.get(0)), kek);
             }
         }
         for (int column = 1; column < 10; column++) {
             if (numbersInColumn(tiles, column) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidatesColumn(candidates, column));
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidatesColumn(candidates, column));
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] < 2 || count[num - 1] > 3) {
+                if (counts[num] < 2 || counts[num] > 3) {
                     continue;
                 }
                 ArrayList<Integer> rows = new ArrayList<>();
@@ -69,32 +60,28 @@ public final class Omission {
                         rows.add(row);
                     }
                 }
-                if (rows.size() != count[num - 1]) {
+                if (rows.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 if ((int) Math.ceil((float) rows.get(0) / 3) != (int) Math.ceil((float) rows.get(rows.size() - 1) / 3)) {
                     continue;
                 }
-                test[1] = true;
+                filled = true;
                 System.out.println("Column Omission " + num + " at column " + column + ", rows " + rows.get(0) + "-" + rows.get(rows.size() - 1) + ".");
                 ArrayList<Pair> kek = new ArrayList<>();
                 for (int lolmao : rows) {
                     kek.add(new Pair(lolmao, column));
                 }
-                removeCandidatesSquare(candidates, num, findSquareNum(rows.get(0), column), kek, mode);
+                removeCandidatesSquare(candidates, num, findSquareNum(rows.get(0), column), kek);
             }
         }
         for (int squarenum = 1; squarenum < 10; squarenum++) {
             if (numbersInSquare(tiles, squarenum) > 7) {
                 continue;
             }
-            ArrayList<Byte> lol = concatCandidates(candidatesSquare(candidates, squarenum));
-            byte[] count = new byte[9];
-            for (Byte c : lol) {
-                count[c - 1]++;
-            }
+            byte[] counts = concatCandidates(candidatesSquare(candidates, squarenum));
             for (byte num = 1; num < 10; num++) {
-                if (count[num - 1] < 2 || count[num - 1] > 3) {
+                if (counts[num] < 2 || counts[num] > 3) {
                     continue;
                 }
                 ArrayList<Integer> indexes = new ArrayList<>();
@@ -103,12 +90,12 @@ public final class Omission {
                         indexes.add(index);
                     }
                 }
-                if (indexes.size() != count[num - 1]) {
+                if (indexes.size() != counts[num]) {
                     throw new IllegalArgumentException("AAAAAAAAAAAAA");
                 }
                 boolean rowR = false;
                 if (Math.floor((float) indexes.get(indexes.size() - 1) / 3) == Math.floor((float) indexes.get(0) / 3)) {
-                    test[2] = true;
+                    filled = true;
                     rowR = true;
                     int rowNum = findRowNumInSquare(squarenum, indexes.get(0));
                     int columnMin = findColumnNumInSquare(squarenum, indexes.get(0));
@@ -118,7 +105,7 @@ public final class Omission {
                         if (col >= columnMin && col <= columnMax) {
                             continue;
                         }
-                        removeCandidate(candidates, num, rowNum, col, mode);
+                        removeCandidate(candidates, num, rowNum, col);
                     }
                 }
                 if (rowR) {
@@ -128,7 +115,7 @@ public final class Omission {
                     if (indexes.size() == 3 && !indexes.get(1).equals(indexes.get(0))) {
                         continue;
                     }
-                    test[2] = true;
+                    filled = true;
                     int colNum = findColumnNumInSquare(squarenum, indexes.get(0));
                     int rowMin = findRowNumInSquare(squarenum, indexes.get(0));
                     int rowMax = findRowNumInSquare(squarenum, indexes.get(indexes.size() - 1));
@@ -137,12 +124,12 @@ public final class Omission {
                         if (row >= rowMin && row <= rowMax) {
                             continue;
                         }
-                        removeCandidate(candidates, num, row, colNum, mode);
+                        removeCandidate(candidates, num, row, colNum);
                     }
                 }
             }
         }
-        if (!test[0] && !test[1] && !test[2] && mode.showAlgorithmUnusedMessage()) {
+        if (!filled && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No omissions were found.");
         }
     }
@@ -154,7 +141,7 @@ public final class Omission {
      * @param squarenum  square number (1-9) to remove from
      * @param exceptions exceptions (i.e. numbers to leave out)
      */
-    private static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions, SolverMode mode) {
+    private static void removeCandidatesSquare(Candidates[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesSquare with invalid param num: " + num);
         }
@@ -174,7 +161,7 @@ public final class Omission {
             if (getOut) {
                 continue;
             }
-            removeCandidate(candidates, num, row, column, mode);
+            removeCandidate(candidates, num, row, column);
         }
     }
 }

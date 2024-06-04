@@ -1,16 +1,14 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Pair;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import static sudokujava.algorithm.General.crash;
 import static sudokujava.algorithm.General.fillNumber;
 
 public final class NakedSingle {
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
         Stack<Pair> numbers = new Stack<>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -20,7 +18,7 @@ public final class NakedSingle {
             }
         }
         if (numbers.isEmpty()) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
                 System.out.println("No Naked Singles are found.");
             }
             return;
@@ -33,11 +31,11 @@ public final class NakedSingle {
                 continue;
             }
             try {
-                byte number = candidates[row - 1][column - 1].get(0);
-                fillNumber(tiles, candidates, number, row, column, mode);
+                byte number = candidates[row - 1][column - 1].first();
+                fillNumber(tiles, candidates, number, row, column);
                 System.out.println("Naked Single " + number + " at " + row + "," + column);
             } catch (IndexOutOfBoundsException e) {
-                crash(tiles, candidates, mode);
+                crash(tiles, candidates);
             }
         }
     }

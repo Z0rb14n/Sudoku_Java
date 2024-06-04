@@ -1,6 +1,5 @@
 package util;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -9,13 +8,6 @@ import java.util.Objects;
 public class Pair {
     private final int x;
     private final int y;
-
-    public Pair(ArrayList<Byte> lol) {
-        if (lol == null || lol.size() != 2)
-            throw new IllegalArgumentException("Pair initializer called with invalid arraylist param.");
-        x = lol.get(0);
-        y = lol.get(1);
-    }
 
     public Pair(int x, int y) {
         this.x = x;

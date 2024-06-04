@@ -2,7 +2,7 @@ package ui;
 
 public enum UIMode {
     FILE("File"), IMAGE("Image"), MANUAL("Manual");
-    private String label;
+    private final String label;
 
     UIMode(String label) {
         this.label = label;

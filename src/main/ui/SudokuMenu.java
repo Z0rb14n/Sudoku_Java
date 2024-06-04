@@ -1,6 +1,6 @@
 package ui;
 
-import sudokujava.SolverMode.Speed;
+import sudokujava.SolverSpeed;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,8 +8,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 class SudokuMenu extends JPanel {
-    private SourceBox sb = new SourceBox();
-    private ActualMenu menu = new ActualMenu();
+    private final SourceBox sb = new SourceBox();
+    private final ActualMenu menu = new ActualMenu();
 
     SudokuMenu() {
         Dimension size = new Dimension(600, 200);
@@ -26,9 +26,9 @@ class SudokuMenu extends JPanel {
     }
 
     private class ActualMenu extends JPanel {
-        private GeneralMenu mm = new GeneralMenu();
-        private ImageMenu im = new ImageMenu();
-        private FileMenu fm = new FileMenu();
+        private final GeneralMenu mm = new GeneralMenu();
+        private final ImageMenu im = new ImageMenu();
+        private final FileMenu fm = new FileMenu();
 
         ActualMenu() {
             super();
@@ -54,7 +54,7 @@ class SudokuMenu extends JPanel {
             return im.getAutotypeEnabled();
         }
 
-        Speed getSpeed() {
+        SolverSpeed getSpeed() {
             return mm.getSpeed();
         }
 
@@ -71,7 +71,7 @@ class SudokuMenu extends JPanel {
         return menu.getAutoType();
     }
 
-    Speed getSpeed() {
+    SolverSpeed getSpeed() {
         return menu.getSpeed();
     }
 

@@ -6,6 +6,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class GeneralTest {
     @Test
+    public void testFindRowNumInSquare() {
+        assertEquals(4, General.findRowNumInSquare(5, 2));
+        assertEquals(6, General.findRowNumInSquare(4, 8));
+        assertEquals(1, General.findRowNumInSquare(3, 0));
+    }
+
+    @Test
+    public void testFindColNumInSquare() {
+        assertEquals(6, General.findColumnNumInSquare(5, 2));
+        assertEquals(3, General.findColumnNumInSquare(4, 8));
+        assertEquals(7, General.findColumnNumInSquare(3, 0));
+    }
+
+    @Test
     public void testFindSquareNum() {
         for (int row = 1; row < 10; row++) {
             for (int col = 1; col < 10; col++) {

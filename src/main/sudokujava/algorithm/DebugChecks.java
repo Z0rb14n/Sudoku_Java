@@ -1,9 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
-
-import java.util.ArrayList;
-
 import static sudokujava.algorithm.General.crash;
 
 public final class DebugChecks {
@@ -12,13 +8,12 @@ public final class DebugChecks {
      *
      * @param tiles      tile array
      * @param candidates candidate array
-     * @param mode       solver mode
      */
-    public static void simpleCheckValid(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void checkNonemptyCandidates(byte[][] tiles, Candidates[][] candidates) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (tiles[i][j] == 0 && candidates[i][j].isEmpty()) {
-                    crash(tiles, candidates, mode);
+                    crash(tiles, candidates);
                 }
             }
         }
@@ -27,8 +22,8 @@ public final class DebugChecks {
     /**
      * Advanced check valid - does not check whether number exists in block
      */
-    public static void checkValid(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
-        simpleCheckValid(tiles, candidates, mode);
+    public static void checkValid(byte[][] tiles, Candidates[][] candidates) {
+        checkNonemptyCandidates(tiles, candidates);
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
                 if (tiles[i][j] == 0) {
@@ -42,7 +37,7 @@ public final class DebugChecks {
                     }
                     if (tiles[row][j] == num) {
                         System.err.println("Duplicate number in column");
-                        crash(tiles, candidates, mode);
+                        crash(tiles, candidates);
                     }
                 }
                 for (int col = 0; col < 9; col++) {
@@ -51,7 +46,7 @@ public final class DebugChecks {
                     }
                     if (tiles[i][col] == num) {
                         System.err.println("Duplicate number in row");
-                        crash(tiles, candidates, mode);
+                        crash(tiles, candidates);
                     }
                 }
             }

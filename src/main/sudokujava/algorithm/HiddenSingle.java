@@ -1,9 +1,7 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Triple;
 
-import java.util.ArrayList;
 import java.util.Stack;
 
 import static sudokujava.algorithm.General.*;
@@ -14,54 +12,45 @@ public final class HiddenSingle {
      *
      * @param tiles      tile array
      * @param candidates candidate array
-     * @param mode       solver mode
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, Candidates[][] candidates) {
         Stack<Triple> nums = new Stack<>();
         for (int row = 0; row < 9; row++) {
-            ArrayList<Byte> thing = concatCandidates(candidates[row]);
+            byte[] counts = concatCandidates(candidates[row]);
+            outer:
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
-                    boolean GIT = false;
+                if (counts[num] == 1) {
                     for (int column = 0; column < 9; column++) {
                         if (candidates[row][column].contains(num)) {
                             nums.push(new Triple(num, row + 1, column + 1));
-                            GIT = true;
-                            break;
+                            continue outer;
                         }
-                    }
-                    if (!GIT) {
-                        throw new IllegalArgumentException("AAAAAAAAAAAAAAAAA");
                     }
                 }
             }
         }
         for (int column = 0; column < 9; column++) {
-            ArrayList<Byte> thing = concatCandidates(candidatesColumn(candidates, column + 1));
+            byte[] counts = concatCandidates(candidatesColumn(candidates, column + 1));
+            outer:
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
-                    boolean GIT = false;
+                if (counts[num] == 1) {
                     for (int row = 0; row < 9; row++) {
                         if (candidates[row][column].contains(num)) {
                             Triple temp = new Triple(num, row + 1, column + 1);
                             if (!nums.contains(temp)) {
                                 nums.push(temp);
                             }
-                            GIT = true;
-                            break;
+                            continue outer;
                         }
-                    }
-                    if (!GIT) {
-                        throw new IllegalArgumentException("AAAAAAAAAAAAAAAAA");
                     }
                 }
             }
         }
         for (int box = 1; box < 10; box++) {
-            ArrayList<Byte> thing = concatCandidates(candidatesSquare(candidates, box));
+            byte[] counts = concatCandidates(candidatesSquare(candidates, box));
+            outer:
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
-                    boolean GIT = false;
+                if (counts[num] == 1) {
                     for (int index = 0; index < 9; index++) {
                         int row = findRowNumInSquare(box, index);
                         int column = findColumnNumInSquare(box, index);
@@ -70,18 +59,14 @@ public final class HiddenSingle {
                             if (!nums.contains(temp)) {
                                 nums.push(temp);
                             }
-                            GIT = true;
-                            break;
+                            continue outer;
                         }
-                    }
-                    if (!GIT) {
-                        throw new IllegalArgumentException("AAAAAAAAAAAAAAAAA");
                     }
                 }
             }
         }
         if (nums.empty()) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
                 System.out.println("No Hidden Singles were found.");
             }
             return;
@@ -91,7 +76,8 @@ public final class HiddenSingle {
             byte number = lol.getNum();
             int row = lol.getRow();
             int col = lol.getCol();
-            fillNumber(tiles, candidates, number, row, col, mode);
+            if (tiles[row - 1][col - 1] != 0) continue;
+            fillNumber(tiles, candidates, number, row, col);
             System.out.println("Filled Hidden Single " + number + " at " + row + "," + col);
         }
     }

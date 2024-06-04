@@ -13,7 +13,7 @@ public final class Omission {
      * one block, clear the block.
      */
     public static void solve(byte[][] tiles, Candidates[][] candidates) {
-        boolean[] test = new boolean[3];
+        boolean filled = false;
         //perspective of row
         for (int row = 1; row < 10; row++) {
             if (numbersInRow(tiles, row) > 7) {
@@ -36,7 +36,7 @@ public final class Omission {
                 if (findSquareNum(row, columns.get(0)) != findSquareNum(row, columns.get(columns.size() - 1))) {
                     continue;
                 }
-                test[0] = true;
+                filled = true;
                 System.out.println("Row Omission " + num + " at row " + row + ", columns " + columns.get(0) + "-" + columns.get(columns.size() - 1) + ".");
                 ArrayList<Pair> kek = new ArrayList<>();
                 for (int lolmao : columns) {
@@ -66,7 +66,7 @@ public final class Omission {
                 if ((int) Math.ceil((float) rows.get(0) / 3) != (int) Math.ceil((float) rows.get(rows.size() - 1) / 3)) {
                     continue;
                 }
-                test[1] = true;
+                filled = true;
                 System.out.println("Column Omission " + num + " at column " + column + ", rows " + rows.get(0) + "-" + rows.get(rows.size() - 1) + ".");
                 ArrayList<Pair> kek = new ArrayList<>();
                 for (int lolmao : rows) {
@@ -95,7 +95,7 @@ public final class Omission {
                 }
                 boolean rowR = false;
                 if (Math.floor((float) indexes.get(indexes.size() - 1) / 3) == Math.floor((float) indexes.get(0) / 3)) {
-                    test[2] = true;
+                    filled = true;
                     rowR = true;
                     int rowNum = findRowNumInSquare(squarenum, indexes.get(0));
                     int columnMin = findColumnNumInSquare(squarenum, indexes.get(0));
@@ -115,7 +115,7 @@ public final class Omission {
                     if (indexes.size() == 3 && !indexes.get(1).equals(indexes.get(0))) {
                         continue;
                     }
-                    test[2] = true;
+                    filled = true;
                     int colNum = findColumnNumInSquare(squarenum, indexes.get(0));
                     int rowMin = findRowNumInSquare(squarenum, indexes.get(0));
                     int rowMax = findRowNumInSquare(squarenum, indexes.get(indexes.size() - 1));
@@ -129,7 +129,7 @@ public final class Omission {
                 }
             }
         }
-        if (!test[0] && !test[1] && !test[2] && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
+        if (!filled && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No omissions were found.");
         }
     }

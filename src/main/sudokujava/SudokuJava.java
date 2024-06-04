@@ -13,6 +13,8 @@ public class SudokuJava {
     private final long setupFinish;
     private final SolverSpeed speed;
     private boolean autoType = true;
+
+    private boolean checkValidity = true;
     private SudokuFile sudokuFile;
     public String outputFile;
 
@@ -60,7 +62,7 @@ public class SudokuJava {
 
     public void run() {
         Solver solver = new Solver();
-        solver.solve(tiles, speed);
+        solver.solve(tiles, speed, checkValidity);
         if (outputFile != null) SudokuFileIO.writeTiles(outputFile, tiles);
         if (autoType && sudokuFile != null && sudokuFile instanceof ImageSudokuFile)
             new SudokuScreenIO().typeValues((ImageSudokuFile) sudokuFile, tiles);
@@ -71,6 +73,14 @@ public class SudokuJava {
         System.out.printf("Setup:  %010.3fms%n", setupTime / 1000000.0);
         System.out.printf("Solve:  %010.3fms%n", solver.getSolveTime() / 1000000.0);
         System.out.printf("Output: %010.3fms%n", outputTime / 1000000.0);
+    }
+
+    public void setCheckValidity(boolean checkValidity) {
+        this.checkValidity = checkValidity;
+    }
+
+    public void setOutputFile(String file) {
+        this.outputFile = file;
     }
 
     public byte[][] getTiles() {

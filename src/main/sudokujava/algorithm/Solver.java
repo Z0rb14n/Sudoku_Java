@@ -9,11 +9,10 @@ import static sudokujava.SolverSpeed.*;
  */
 public class Solver {
     public int loopLimit = 200;
-    public boolean checkValidity = true;
     private long solveTime;
     private long solveFinish;
 
-    public void solve(byte[][] tiles, SolverSpeed speed) {
+    public void solve(byte[][] tiles, SolverSpeed speed, boolean checkValidity) {
         long startTime = System.nanoTime();
         if (speed == SolverSpeed.RECURSE) {
             Recursive.solve(tiles);

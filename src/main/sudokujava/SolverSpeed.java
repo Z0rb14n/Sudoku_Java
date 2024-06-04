@@ -1,12 +1,12 @@
 package sudokujava;
 
 public enum SolverSpeed {
-    FAST('0', 0),
-    MEDIUM('1', 1),
-    SLOW('2', 2),
-    VERY_SLOW('3', 3),
-    REALLY_SLOW('4', 4),
-    RECURSE('R', Integer.MAX_VALUE);
+    FAST(0),
+    MEDIUM(1),
+    SLOW(2),
+    VERY_SLOW(3),
+    REALLY_SLOW(4),
+    RECURSE(Integer.MAX_VALUE);
 
     public static SolverSpeed getDefault() {
         return SLOW;
@@ -20,22 +20,26 @@ public enum SolverSpeed {
         return labels;
     }
 
-    SolverSpeed(char rep, int speed) {
-        this.rep = rep;
+    SolverSpeed(int speed) {
         this.speed = speed;
     }
-
-    private final char rep;
     private final int speed;
 
-    public char characterRepresentation() {
-        return rep;
-    }
-
-    public static SolverSpeed getSpeed(char input) {
-        for (SolverSpeed sp : SolverSpeed.values()) {
-            if (sp.rep == input) return sp;
+    public static SolverSpeed parseSpeed(String input) {
+        if ("fast".compareToIgnoreCase(input) == 0 || "f".compareToIgnoreCase(input) == 0) return FAST;
+        if ("medium".compareToIgnoreCase(input) == 0 || "m".compareToIgnoreCase(input) == 0) return MEDIUM;
+        if ("slow".compareToIgnoreCase(input) == 0 || "s".compareToIgnoreCase(input) == 0) return SLOW;
+        if ("very slow".compareToIgnoreCase(input) == 0
+                || "veryslow".compareToIgnoreCase(input) == 0
+                || "v".compareToIgnoreCase(input) == 0
+                || "vs".compareToIgnoreCase(input) == 0) {
+            return VERY_SLOW;
         }
+        if ("really slow".compareToIgnoreCase(input) == 0
+                || "reallyslow".compareToIgnoreCase(input) == 0
+                || "rs".compareToIgnoreCase(input) == 0) return REALLY_SLOW;
+        if ("recurse".compareToIgnoreCase(input) == 0
+                || "r".compareToIgnoreCase(input) == 0) return RECURSE;
         return null;
     }
 

@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
-
 import java.util.ArrayList;
 
 import static sudokujava.algorithm.General.*;
@@ -10,7 +8,7 @@ public final class XWing {
     /**
      * X-Wing solver - essentially pairs in rows, kill everything in column
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         boolean rowT = false;
         boolean colT = false;
         for (int row = 1; row < 10; row++) {
@@ -63,8 +61,8 @@ public final class XWing {
                     }
                     rowT = true;
                     System.out.println("X-Wing " + num + " found at columns " + col1[0] + "," + col1[1] + ", rows " + row + "," + row2);
-                    removeCandidatesColumn(candidates, num, col1[0], mode, row, row2);
-                    removeCandidatesColumn(candidates, num, col1[1], mode, row, row2);
+                    removeCandidatesColumn(candidates, num, col1[0], row, row2);
+                    removeCandidatesColumn(candidates, num, col1[1], row, row2);
                 }
             }
         }
@@ -118,12 +116,12 @@ public final class XWing {
                     }
                     colT = true;
                     System.out.println("X-Wing " + num + " found at rows " + row1[0] + "," + row1[1] + ", columns " + col + "," + col2);
-                    removeCandidatesRow(candidates, num, row1[0], mode, col, col2);
-                    removeCandidatesRow(candidates, num, row1[1], mode, col, col2);
+                    removeCandidatesRow(candidates, num, row1[0], col, col2);
+                    removeCandidatesRow(candidates, num, row1[1], col, col2);
                 }
             }
         }
-        if (!rowT && !colT && mode.showAlgorithmUnusedMessage()) {
+        if (!rowT && !colT && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No X-Wings were found.");
         }
     }

@@ -6,9 +6,9 @@ import java.awt.*;
 
 class ImageMenu extends JPanel {
     // TODO POTENTAL IMAGE DELAY OPTION
-    private static final String[] VALUES = new String[]{"Top Left X", "Top Left Y", "Width", "Height"};
-    private LabelAndField[] fields = new LabelAndField[VALUES.length];
-    private AutoTypeBox box = new AutoTypeBox();
+    private static final String[] VALUES = new String[]{"Top Left X", "Top Left Y", "Width", "Height", "Delay"};
+    private final LabelAndField[] fields = new LabelAndField[VALUES.length];
+    private final AutoTypeBox box = new AutoTypeBox();
 
     ImageMenu() {
         super();
@@ -41,7 +41,7 @@ class ImageMenu extends JPanel {
     }
 
     private class AutoTypeBox extends JPanel {
-        private JCheckBox box = new JCheckBox();
+        private final JCheckBox box = new JCheckBox();
 
         AutoTypeBox() {
             super();

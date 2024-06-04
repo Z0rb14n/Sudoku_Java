@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
-
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -11,7 +9,7 @@ public final class OpenSingle {
     /**
      * Fill open singles (i.e. 8 numbers in row/col/squ)
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         boolean[] tests = new boolean[3];
         Stack<Integer> rows = new Stack<>();
         for (int i = 1; i < 10; i++) {
@@ -38,7 +36,7 @@ public final class OpenSingle {
                 for (int i = 0; i < 9; i++) {
                     if (tiles[row - 1][i] == 0) {
                         System.out.println("Filled Open Single " + number + ", row " + row + ", column " + (i + 1));
-                        fillNumber(tiles, candidates, number, row, i + 1, mode);
+                        fillNumber(tiles, candidates, number, row, i + 1);
                         break;
                     }
                 }
@@ -70,7 +68,7 @@ public final class OpenSingle {
                 for (int i = 0; i < 9; i++) {
                     if (tiles[i][col - 1] == 0) {
                         System.out.println("Filled Open Single " + number + ", row " + (i + 1) + ", column " + col);
-                        fillNumber(tiles, candidates, number, i + 1, col, mode);
+                        fillNumber(tiles, candidates, number, i + 1, col);
                         break;
                     }
                 }
@@ -104,14 +102,14 @@ public final class OpenSingle {
                         int row = findRowNumInSquare(box, i);
                         int col = findColumnNumInSquare(box, i);
                         System.out.println("Filled Open Single " + number + ", row " + row + ", column " + col);
-                        fillNumber(tiles, candidates, number, row, col, mode);
+                        fillNumber(tiles, candidates, number, row, col);
                         break;
                     }
                 }
             } while (!cols.isEmpty());
         }
         if (!tests[0] && !tests[1] && !tests[2]) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
                 System.out.println("No Open Singles were found.");
             }
         }

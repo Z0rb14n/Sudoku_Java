@@ -305,7 +305,7 @@ public class RobotWrapper extends Robot {
      * @param list String to type
      */
     public void holdType(int hold, String list) {
-        if (list == null || list.length() == 0) {
+        if (list == null || list.isEmpty()) {
             return;
         }
         keyPress(hold);
@@ -347,7 +347,7 @@ public class RobotWrapper extends Robot {
      * @param a string to type
      */
     public void simplerType(String a) {
-        if (a == null || a.length() == 0) {
+        if (a == null || a.isEmpty()) {
             return;
         }
         for (int i = 0; i < a.length(); i++) {

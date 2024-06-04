@@ -1,6 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Triple;
 
 import java.util.ArrayList;
@@ -14,14 +13,13 @@ public final class HiddenSingle {
      *
      * @param tiles      tile array
      * @param candidates candidate array
-     * @param mode       solver mode
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         Stack<Triple> nums = new Stack<>();
         for (int row = 0; row < 9; row++) {
             ArrayList<Byte> thing = concatCandidates(candidates[row]);
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
+                if (thing.contains(num) && thing.indexOf(num) == thing.lastIndexOf(num)) {
                     boolean GIT = false;
                     for (int column = 0; column < 9; column++) {
                         if (candidates[row][column].contains(num)) {
@@ -39,7 +37,7 @@ public final class HiddenSingle {
         for (int column = 0; column < 9; column++) {
             ArrayList<Byte> thing = concatCandidates(candidatesColumn(candidates, column + 1));
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
+                if (thing.contains(num) && thing.indexOf(num) == thing.lastIndexOf(num)) {
                     boolean GIT = false;
                     for (int row = 0; row < 9; row++) {
                         if (candidates[row][column].contains(num)) {
@@ -60,7 +58,7 @@ public final class HiddenSingle {
         for (int box = 1; box < 10; box++) {
             ArrayList<Byte> thing = concatCandidates(candidatesSquare(candidates, box));
             for (byte num = 1; num < 10; num++) {
-                if (thing.indexOf(num) != -1 && thing.indexOf(num) == thing.lastIndexOf(num)) {
+                if (thing.contains(num) && thing.indexOf(num) == thing.lastIndexOf(num)) {
                     boolean GIT = false;
                     for (int index = 0; index < 9; index++) {
                         int row = findRowNumInSquare(box, index);
@@ -81,7 +79,7 @@ public final class HiddenSingle {
             }
         }
         if (nums.empty()) {
-            if (mode.showAlgorithmUnusedMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
                 System.out.println("No Hidden Singles were found.");
             }
             return;
@@ -91,7 +89,7 @@ public final class HiddenSingle {
             byte number = lol.getNum();
             int row = lol.getRow();
             int col = lol.getCol();
-            fillNumber(tiles, candidates, number, row, col, mode);
+            fillNumber(tiles, candidates, number, row, col);
             System.out.println("Filled Hidden Single " + number + " at " + row + "," + col);
         }
     }

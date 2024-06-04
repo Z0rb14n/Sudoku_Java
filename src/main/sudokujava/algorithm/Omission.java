@@ -1,6 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Pair;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public final class Omission {
      * clear row. Same with columns. Conversely, if the row is concentrated in
      * one block, clear the block.
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         boolean[] test = new boolean[3];
         //perspective of row
         for (int row = 1; row < 10; row++) {
@@ -47,7 +46,7 @@ public final class Omission {
                 for (int lolmao : columns) {
                     kek.add(new Pair(row, lolmao));
                 }
-                removeCandidatesSquare(candidates, num, findSquareNum(row, columns.get(0)), kek, mode);
+                removeCandidatesSquare(candidates, num, findSquareNum(row, columns.get(0)), kek);
             }
         }
         for (int column = 1; column < 10; column++) {
@@ -81,7 +80,7 @@ public final class Omission {
                 for (int lolmao : rows) {
                     kek.add(new Pair(lolmao, column));
                 }
-                removeCandidatesSquare(candidates, num, findSquareNum(rows.get(0), column), kek, mode);
+                removeCandidatesSquare(candidates, num, findSquareNum(rows.get(0), column), kek);
             }
         }
         for (int squarenum = 1; squarenum < 10; squarenum++) {
@@ -118,7 +117,7 @@ public final class Omission {
                         if (col >= columnMin && col <= columnMax) {
                             continue;
                         }
-                        removeCandidate(candidates, num, rowNum, col, mode);
+                        removeCandidate(candidates, num, rowNum, col);
                     }
                 }
                 if (rowR) {
@@ -137,12 +136,12 @@ public final class Omission {
                         if (row >= rowMin && row <= rowMax) {
                             continue;
                         }
-                        removeCandidate(candidates, num, row, colNum, mode);
+                        removeCandidate(candidates, num, row, colNum);
                     }
                 }
             }
         }
-        if (!test[0] && !test[1] && !test[2] && mode.showAlgorithmUnusedMessage()) {
+        if (!test[0] && !test[1] && !test[2] && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No omissions were found.");
         }
     }
@@ -154,7 +153,7 @@ public final class Omission {
      * @param squarenum  square number (1-9) to remove from
      * @param exceptions exceptions (i.e. numbers to leave out)
      */
-    private static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions, SolverMode mode) {
+    private static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, ArrayList<Pair> exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesSquare with invalid param num: " + num);
         }
@@ -174,7 +173,7 @@ public final class Omission {
             if (getOut) {
                 continue;
             }
-            removeCandidate(candidates, num, row, column, mode);
+            removeCandidate(candidates, num, row, column);
         }
     }
 }

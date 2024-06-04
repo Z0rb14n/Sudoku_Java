@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
-
 import java.util.ArrayList;
 
 import static sudokujava.algorithm.General.*;
@@ -10,7 +8,7 @@ public final class HiddenPair {
     /**
      * Only pairs of candidates in row/col/block
      */
-    public static void solve(ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(ArrayList<Byte>[][] candidates) {
         boolean[] test = new boolean[3];
         //row
         for (int row = 1; row < 10; row++) {
@@ -47,8 +45,8 @@ public final class HiddenPair {
                     if (kek[i][0] == kek[j][0] && kek[i][1] == kek[j][1]) {
                         test[0] = true;
                         System.out.println("Hidden Pair " + nums.get(i) + "," + nums.get(j) + " found at row " + row + ", columns " + (kek[i][0] + 1) + "," + (kek[i][1] + 1));
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, row, kek[i][0] + 1, mode);
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, row, kek[i][1] + 1, mode);
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, row, kek[i][0] + 1);
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, row, kek[i][1] + 1);
                     }
                 }
             }
@@ -88,8 +86,8 @@ public final class HiddenPair {
                     if (kek[i][0] == kek[j][0] && kek[i][1] == kek[j][1]) {
                         test[1] = true;
                         System.out.println("Hidden Pair " + nums.get(i) + "," + nums.get(j) + " found at column " + col + ", rows " + (kek[i][0] + 1) + "," + (kek[i][1] + 1));
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, kek[i][0] + 1, col, mode);
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, kek[i][1] + 1, col, mode);
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, kek[i][0] + 1, col);
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, kek[i][1] + 1, col);
                     }
                 }
             }
@@ -128,13 +126,13 @@ public final class HiddenPair {
                     if (kek[i][0] == kek[j][0] && kek[i][1] == kek[j][1]) {
                         test[2] = true;
                         System.out.println("Hidden Pair " + nums.get(i) + "," + nums.get(j) + " found at square " + sq + ", indexes " + kek[i][0] + "," + kek[i][1]);
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, findRowNumInSquare(sq, kek[i][0]), findColumnNumInSquare(sq, kek[i][0]), mode);
-                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, findRowNumInSquare(sq, kek[i][1]), findColumnNumInSquare(sq, kek[i][1]), mode);
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, findRowNumInSquare(sq, kek[i][0]), findColumnNumInSquare(sq, kek[i][0]));
+                        removeCandidateExcept(candidates, new byte[]{nums.get(i), nums.get(j)}, findRowNumInSquare(sq, kek[i][1]), findColumnNumInSquare(sq, kek[i][1]));
                     }
                 }
             }
         }
-        if (!test[0] && !test[1] && !test[2] && mode.showAlgorithmUnusedMessage()) {
+        if (!test[0] && !test[1] && !test[2] && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No Hidden Pairs were found.");
         }
     }
@@ -146,7 +144,7 @@ public final class HiddenPair {
      * @param rownum rownumber (1-9)
      * @param colnum colnumber (1-9)
      */
-    private static void removeCandidateExcept(ArrayList<Byte>[][] candidates, byte[] num, int rownum, int colnum, SolverMode mode) {
+    private static void removeCandidateExcept(ArrayList<Byte>[][] candidates, byte[] num, int rownum, int colnum) {
         ArrayList<Byte> lel = new ArrayList<>(candidates[rownum - 1][colnum - 1]);
         for (Byte lol : lel) {
             boolean getOut = false;
@@ -159,7 +157,7 @@ public final class HiddenPair {
             if (getOut) {
                 continue;
             }
-            removeCandidate(candidates, lol, rownum, colnum, mode);
+            removeCandidate(candidates, lol, rownum, colnum);
         }
     }
 }

@@ -1,13 +1,11 @@
 package cli;
 
-import sudokujava.SolverMode;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
 public class SudokuCLI {
-    private static HashMap<String, Integer> usedArguments = new HashMap<>();
+    private static final HashMap<String, Integer> usedArguments = new HashMap<>();
 
     static {
         usedArguments.put("-f", 1); // input file
@@ -56,7 +54,7 @@ public class SudokuCLI {
         }
         return param;
     }
-
+/*
     public static SolverMode generateSettings(String[] args) {
         HashMap<String, String[]> param = generateParameters(args);
         for (String key : param.keySet()) {
@@ -69,18 +67,19 @@ public class SudokuCLI {
         }
         throw new UnsupportedOperationException("Not implemented yet.");
     }
+ */
 
     public static void main(String[] args) {
         if (initialHelpCases(args)) return;
         try {
-            SolverMode settings = generateSettings(args);
 
+            // TODO IMPL
             throw new UnsupportedOperationException("Not implemented yet.");
         } catch (ArgumentException ex) {
             System.err.println(ex.getMessage());
             System.exit(-1);
         } catch (Exception ex) {
-            System.err.println(ex);
+            ex.printStackTrace();
             System.exit(-1);
         }
     }

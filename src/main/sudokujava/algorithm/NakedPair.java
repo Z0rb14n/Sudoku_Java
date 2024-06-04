@@ -1,6 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
 import util.Pair;
 
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ public final class NakedPair {
     /**
      * Two tiles having the same candidates (pairs of candidates)
      */
-    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    public static void solve(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         boolean[] test = new boolean[3];
         //check in row
         for (int row = 1; row < 10; row++) {
@@ -45,8 +44,8 @@ public final class NakedPair {
                 throw new IllegalArgumentException("AAAAAAAAAAAA");
             }
             System.out.println("Naked Pair " + correct.getX() + "," + correct.getY() + " found at row " + row + ", columns " + (cols.get(index1) + 1) + "," + (cols.get(index2) + 1));
-            removeCandidatesRow(candidates, (byte) correct.getX(), row, mode, cols.get(index1) + 1, cols.get(index2) + 1);
-            removeCandidatesRow(candidates, (byte) correct.getY(), row, mode, cols.get(index1) + 1, cols.get(index2) + 1);
+            removeCandidatesRow(candidates, (byte) correct.getX(), row, cols.get(index1) + 1, cols.get(index2) + 1);
+            removeCandidatesRow(candidates, (byte) correct.getY(), row, cols.get(index1) + 1, cols.get(index2) + 1);
         }
         //check columns
         for (int column = 1; column < 10; column++) {
@@ -76,11 +75,11 @@ public final class NakedPair {
                 }
             }
             if (index1 == -1 || correct == null) {
-                crash(tiles, candidates, mode);
+                crash(tiles, candidates);
             }
             System.out.println("Naked Pair " + correct.getX() + "," + correct.getY() + " found at column " + column + ", rows " + (rows.get(index1) + 1) + "," + (rows.get(index2) + 1));
-            removeCandidatesColumn(candidates, (byte) correct.getX(), column, mode, rows.get(index1) + 1, rows.get(index2) + 1);
-            removeCandidatesColumn(candidates, (byte) correct.getY(), column, mode, rows.get(index1) + 1, rows.get(index2) + 1);
+            removeCandidatesColumn(candidates, (byte) correct.getX(), column, rows.get(index1) + 1, rows.get(index2) + 1);
+            removeCandidatesColumn(candidates, (byte) correct.getY(), column, rows.get(index1) + 1, rows.get(index2) + 1);
         }
         for (int square = 1; square < 10; square++) {
             ArrayList<Pair> lol = new ArrayList<>();
@@ -111,13 +110,13 @@ public final class NakedPair {
                 }
             }
             if (index1 == -1 || correct == null) {
-                crash(tiles, candidates, mode);
+                crash(tiles, candidates);
             }
             System.out.println("Naked Pair " + correct.getX() + "," + correct.getY() + " found at square " + square + ", indexes " + indexes.get(index1) + "," + indexes.get(index2));
-            removeCandidatesSquare(candidates, (byte) correct.getX(), square, mode, indexes.get(index1), indexes.get(index2));
-            removeCandidatesSquare(candidates, (byte) correct.getY(), square, mode, indexes.get(index1), indexes.get(index2));
+            removeCandidatesSquare(candidates, (byte) correct.getX(), square, indexes.get(index1), indexes.get(index2));
+            removeCandidatesSquare(candidates, (byte) correct.getY(), square, indexes.get(index1), indexes.get(index2));
         }
-        if (!(test[0] || test[1] || test[2]) && mode.showAlgorithmUnusedMessage()) {
+        if (!(test[0] || test[1] || test[2]) && AlgorithmLogSettings.getInstance().shouldPrintAlgorithmUnused()) {
             System.out.println("No Naked Pairs were found.");
         }
     }

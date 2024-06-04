@@ -1,7 +1,5 @@
 package sudokujava.algorithm;
 
-import sudokujava.SolverMode;
-
 import java.util.ArrayList;
 
 // FOR ALL METHODS, REQUIRES tiles/candidates PARAMETER to be VALID SUDOKU PUZZLE/CANDIDATES
@@ -41,6 +39,7 @@ public final class General {
         if (colnum < 1 || colnum > 9) {
             throw new IllegalArgumentException("candidatesColumn called with invalid arugment: " + colnum);
         }
+        @SuppressWarnings("unchecked")
         ArrayList<Byte>[] lol = (ArrayList<Byte>[]) new ArrayList[9];
         for (int i = 0; i < 9; i++) {
             lol[i] = candidates[i][colnum - 1];
@@ -59,6 +58,7 @@ public final class General {
         if (squarenum < 1 || squarenum > 9) {
             throw new IllegalArgumentException("candidatesSquare called with invalid arugment: " + squarenum);
         }
+        @SuppressWarnings("unchecked")
         ArrayList<Byte>[] lol = (ArrayList<Byte>[]) new ArrayList[9];
         int temp = (int) Math.floor(((float) (squarenum - 1)) / 3);
         int temp1 = (squarenum - 1) % 3;
@@ -248,7 +248,7 @@ public final class General {
      * @param row row of number (1-9)
      * @param col column of number (1-9)
      */
-    static void fillNumber(byte[][] tiles, ArrayList<Byte>[][] candidates, byte num, int row, int col, SolverMode mode) {
+    static void fillNumber(byte[][] tiles, ArrayList<Byte>[][] candidates, byte num, int row, int col) {
         if (num < 1 || num > 9 || row < 1 || row > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("fillNumber called with invalid row and column number " + row + "," + col);
         }
@@ -257,9 +257,9 @@ public final class General {
         }
         tiles[row - 1][col - 1] = num;
         candidates[row - 1][col - 1].clear();
-        removeCandidateRow(candidates, num, row, mode);
-        removeCandidateCol(candidates, num, col, mode);
-        removeCandidateBox(candidates, num, findSquareNum(row, col), mode);
+        removeCandidateRow(candidates, num, row);
+        removeCandidateCol(candidates, num, col);
+        removeCandidateBox(candidates, num, findSquareNum(row, col));
     }
 
     /**
@@ -269,23 +269,23 @@ public final class General {
      * @param row row number (1-9)
      * @param col column number (1-9)
      */
-    static void removeCandidate(ArrayList<Byte>[][] candidates, byte num, int row, int col, SolverMode mode) {
+    static void removeCandidate(ArrayList<Byte>[][] candidates, byte num, int row, int col) {
         if (num < 1 || num > 9 || row < 1 || row > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("RemoveCandidate called with invalid row and column number " + row + "," + col);
         }
-        if (candidates[row - 1][col - 1].size() == 0) {
-            if (mode.showCandidateNotFoundMessage()) {
+        if (candidates[row - 1][col - 1].isEmpty()) {
+            if (AlgorithmLogSettings.getInstance().shouldShowCandidateNotFound()) {
                 System.out.println("Candidate " + num + " did not exist at row " + row + ", column " + col);
             }
         }
         if (!candidates[row - 1][col - 1].contains(num)) {
-            if (mode.showCandidateNotFoundMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldShowCandidateNotFound()) {
                 System.out.println("Candidate " + num + " did not exist at row " + row + ", column " + col);
             }
         } else {
             candidates[row - 1][col - 1].remove((Byte) num);
             candidates[row - 1][col - 1].trimToSize();
-            if (mode.showCandidateRemovalMessage()) {
+            if (AlgorithmLogSettings.getInstance().shouldPrintCandidateRemoval()) {
                 System.out.println("Candidate " + num + " removed from (" + row + "," + col + ")");
             }
         }
@@ -297,12 +297,12 @@ public final class General {
      * @param num number to remove
      * @param row row number (1-9)
      */
-    private static void removeCandidateRow(ArrayList<Byte>[][] candidates, byte num, int row, SolverMode mode) {
+    private static void removeCandidateRow(ArrayList<Byte>[][] candidates, byte num, int row) {
         if (num < 1 || num > 9 || row < 1 || row > 9) {
             throw new IllegalArgumentException("RemoveCandidateRow called with invalid row number " + row);
         }
         for (int i = 1; i < 9 + 1; i++) {
-            removeCandidate(candidates, num, row, i, mode);
+            removeCandidate(candidates, num, row, i);
         }
     }
 
@@ -313,7 +313,7 @@ public final class General {
      * @param rownum     row number (1-9)
      * @param exceptions list of column number exceptions, (1-9)
      */
-    static void removeCandidatesRow(ArrayList<Byte>[][] candidates, byte num, int rownum, SolverMode mode, int... exceptions) {
+    static void removeCandidatesRow(ArrayList<Byte>[][] candidates, byte num, int rownum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesRow with invalid param num: " + num);
         }
@@ -329,7 +329,7 @@ public final class General {
                 }
             }
             if (!getOut) {
-                removeCandidate(candidates, num, rownum, col, mode);
+                removeCandidate(candidates, num, rownum, col);
             }
         }
     }
@@ -340,12 +340,12 @@ public final class General {
      * @param num number to remove
      * @param col column number (1-9)
      */
-    private static void removeCandidateCol(ArrayList<Byte>[][] candidates, byte num, int col, SolverMode mode) {
+    private static void removeCandidateCol(ArrayList<Byte>[][] candidates, byte num, int col) {
         if (num < 1 || num > 9 || col < 1 || col > 9) {
             throw new IllegalArgumentException("RemoveCandidateCol called with invalid column number " + col);
         }
         for (int i = 1; i < 9 + 1; i++) {
-            removeCandidate(candidates, num, i, col, mode);
+            removeCandidate(candidates, num, i, col);
         }
     }
 
@@ -357,7 +357,7 @@ public final class General {
      * @param colnum     column number (1-9)
      * @param exceptions Row number exceptions (1-9)
      */
-    static void removeCandidatesColumn(ArrayList<Byte>[][] candidates, byte num, int colnum, SolverMode mode, int... exceptions) {
+    static void removeCandidatesColumn(ArrayList<Byte>[][] candidates, byte num, int colnum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesColumn with invalid param num: " + num);
         }
@@ -375,7 +375,7 @@ public final class General {
             if (getOut) {
                 continue;
             }
-            removeCandidate(candidates, num, row, colnum, mode);
+            removeCandidate(candidates, num, row, colnum);
         }
     }
 
@@ -385,12 +385,12 @@ public final class General {
      * @param num       number to remove
      * @param squarenum square number of box (1-9)
      */
-    private static void removeCandidateBox(ArrayList<Byte>[][] candidates, byte num, int squarenum, SolverMode mode) {
+    private static void removeCandidateBox(ArrayList<Byte>[][] candidates, byte num, int squarenum) {
         if (num < 1 || num > 9 || squarenum < 1 || squarenum > 9) {
             throw new IllegalArgumentException("RemoveCandidateBox called with invalid square number " + squarenum);
         }
         for (int i = 0; i < 9; i++) {
-            removeCandidate(candidates, num, findRowNumInSquare(squarenum, i), findColumnNumInSquare(squarenum, i), mode);
+            removeCandidate(candidates, num, findRowNumInSquare(squarenum, i), findColumnNumInSquare(squarenum, i));
         }
     }
 
@@ -402,7 +402,7 @@ public final class General {
      * @param squarenum  square number (1-9) to remove from
      * @param exceptions exceptions (i.e. numbers to leave out, 0-8)
      */
-    static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, SolverMode mode, int... exceptions) {
+    static void removeCandidatesSquare(ArrayList<Byte>[][] candidates, byte num, int squarenum, int... exceptions) {
         if (num < 1 || num > 9) {
             throw new IllegalArgumentException("Called removeCandidatesSquare with invalid param num: " + num);
         }
@@ -422,14 +422,13 @@ public final class General {
             if (getOut) {
                 continue;
             }
-            removeCandidate(candidates, num, row, column, mode);
+            removeCandidate(candidates, num, row, column);
         }
     }
 
-    static void crash(byte[][] tiles, ArrayList<Byte>[][] candidates, SolverMode mode) {
+    static void crash(byte[][] tiles, ArrayList<Byte>[][] candidates) {
         printTiles(tiles);
         printCandidates(candidates);
-        System.out.println(mode.toString());
         throw new RuntimeException();
     }
 

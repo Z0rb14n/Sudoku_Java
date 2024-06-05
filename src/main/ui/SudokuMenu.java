@@ -3,7 +3,6 @@ package ui;
 import sudokujava.SolverSpeed;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -12,13 +11,9 @@ class SudokuMenu extends JPanel {
     private final ActualMenu menu = new ActualMenu();
 
     SudokuMenu() {
-        Dimension size = new Dimension(600, 200);
-        setPreferredSize(size);
-        setMinimumSize(size);
-        setMaximumSize(size);
-        setLayout(new BorderLayout());
-        add(sb, BorderLayout.PAGE_START);
-        add(menu, BorderLayout.CENTER);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        add(sb);
+        add(menu);
     }
 
     private void update() {
@@ -32,7 +27,7 @@ class SudokuMenu extends JPanel {
 
         ActualMenu() {
             super();
-            setLayout(new GridLayout(3, 1));
+            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
             add(mm);
             add(im);
             add(fm);

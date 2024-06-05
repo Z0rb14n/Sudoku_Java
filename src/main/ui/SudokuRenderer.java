@@ -5,7 +5,7 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 
 public class SudokuRenderer extends JPanel {
-    private SudokuSquare[] squares = new SudokuSquare[81];
+    private final SudokuSquare[] squares = new SudokuSquare[81];
 
     SudokuRenderer() {
         setBoxSize(new Dimension(360, 360));
@@ -25,7 +25,6 @@ public class SudokuRenderer extends JPanel {
                 else tiles[i][j] = Byte.parseByte(squares[i * 9 + j].getText());
             }
         }
-        sudokujava.algorithm.General.printTiles(tiles);
         return tiles;
     }
 

@@ -12,7 +12,7 @@ public class PreviewFrame extends JFrame {
         setUndecorated(true);
         setSize(width, height);
         setLocation(topX, topY);
-        setBackground(new Color(1.0f, 1.0f, 1.0f, 0.5f));
+        setBackground(new Color(0.6f, 0.6f, 0.6f, 0.5f));
         addKeyListener(new PreviewFrameCloser());
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setFocusable(true);
@@ -30,7 +30,7 @@ public class PreviewFrame extends JFrame {
     private class PreviewFrameCloser extends KeyAdapter {
         @Override
         public void keyTyped(KeyEvent e) {
-            if (e.getExtendedKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (e.getExtendedKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyChar() == KeyEvent.VK_ESCAPE) {
                 close();
             }
         }

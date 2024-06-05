@@ -1,5 +1,7 @@
 package sudokujava;
 
+import sudokujava.algorithm.DebugChecks;
+import sudokujava.algorithm.General;
 import util.SudokuScreenIO;
 
 public class ImageSudokuFile implements SudokuFile {
@@ -40,7 +42,10 @@ public class ImageSudokuFile implements SudokuFile {
         } catch (InterruptedException ex) {
             System.err.println("Interrupted.");
         }
-        return new SudokuScreenIO().readTiles(topLeftX, topLeftY, imageWidth, imageHeight);
+        byte[][] tiles = new SudokuScreenIO().readTiles(topLeftX, topLeftY, imageWidth, imageHeight);
+        General.printTiles(tiles);
+        DebugChecks.checkTileValidity(tiles);
+        return tiles;
     }
 
     @Override

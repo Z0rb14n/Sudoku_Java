@@ -26,7 +26,8 @@ public class SudokuScreenIO {
         } catch (java.awt.AWTException e) {
             throw new OCRException("Could not initialize robot", e);
         }
-        instance.setDatapath("tessdata");
+        instance.setDatapath("./tessdata");
+        instance.setTessVariable("tessedit_char_whitelist", "0123456789");
     }
 
     public void typeValues(ImageSudokuFile mode, byte[][] tiles) {
@@ -75,13 +76,14 @@ public class SudokuScreenIO {
                 try {
                     Rectangle rect = new Rectangle(width * j, height * i, width - (2 * imageOffset), height - (2 * imageOffset));
                     String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, rect, pixelSize);
-                    result = result.replaceAll("\\s+|\\n+|\\|+", "");
+                    result = result.replaceAll("\\s+|\\n+", "");
                     if (printReadCharacter) System.out.println(result);
                     if (!result.isEmpty()) {
                         try {
                             tiles[i][j] = Byte.parseByte(result);
+                            if (tiles[i][j] < 1 || tiles[i][j] > 9) throw new NumberFormatException();
                         } catch (NumberFormatException e) {
-                            throw new OCRException("Invalid characters in OCR: " + result);
+                            throw new OCRException("Invalid characters in OCR: " + result + " at (" + i + "," + j + ")");
                         }
                     }
                 } catch (TesseractException e) {

@@ -55,6 +55,7 @@ public final class OpenSingle {
             byte[] square = findSquare(tiles, box);
             Pair pair = whichMissing(square);
             byte number = (byte) pair.getX();
+            if (number == 0) continue;
             int index = pair.getY();
             int row = findRowNumInSquare(box, index);
             int col = findColumnNumInSquare(box, index);

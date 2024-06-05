@@ -42,10 +42,13 @@ public class App extends JFrame {
                     sj.run();
                     ap.setTiles(sj.getTiles());
                 } catch (IllegalArgumentException ex) {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Invalid File contents.", "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (OCRException ex) {
-                    JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization.", "Error", JOptionPane.ERROR_MESSAGE);
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization: \n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 } catch (Exception ex) {
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(this, "Uncaught Exception " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -64,10 +67,13 @@ public class App extends JFrame {
                 sj.run();
                 ap.setTiles(sj.getTiles());
             } catch (IllegalArgumentException ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Invalid arguments.", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (OCRException ex) {
-                JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization.", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Bad OCR reading/initialization: \n" + ex, "Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
+                ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Uncaught Exception " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

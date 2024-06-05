@@ -392,7 +392,7 @@ public final class General {
     static void crash(byte[][] tiles, Candidates[][] candidates) {
         printTiles(tiles);
         printCandidates(candidates);
-        throw new RuntimeException();
+        throw new RuntimeException("Sudoku invariant broken");
     }
 
     public static void printTiles(byte[][] tiles) {
@@ -410,7 +410,7 @@ public final class General {
                 System.out.print("[");
                 boolean printed = false;
                 for (Byte b : candidates[i][j]) {
-                    if (printed) System.out.println(", ");
+                    if (printed) System.out.print(", ");
                     System.out.print(b);
                     printed = true;
                 }

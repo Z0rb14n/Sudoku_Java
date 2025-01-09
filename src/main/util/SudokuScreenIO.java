@@ -8,8 +8,8 @@ import sudokujava.ImageSudokuFile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 
 public class SudokuScreenIO {
     private static final ITesseract instance = new Tesseract();
@@ -27,9 +27,7 @@ public class SudokuScreenIO {
             throw new OCRException("Could not initialize robot", e);
         }
         instance.setDatapath("./tessdata");
-        instance.setTessVariable("tessedit_char_whitelist", "0123456789 ");
-        // new version
-        // instance.setVariable("tessedit_char_whitelist", "0123456789 ");
+        instance.setVariable("tessedit_char_whitelist", "0123456789 ");
         instance.setPageSegMode(10);
     }
 
@@ -69,17 +67,12 @@ public class SudokuScreenIO {
         BufferedImage puzzle = bot.screenShot(topLeftX + imageOffset, topLeftY + imageOffset, actualImageWidth, actualImageHeight);
         ByteBuffer imgData;
         int pixelSize = puzzle.getColorModel().getPixelSize();
-        try {
-            imgData = ImageIOHelper.getImageByteBuffer(puzzle);
-        } catch (IOException ex) {
-            throw new OCRException("Failed to create image buffer", ex);
-        }
+        imgData = ImageIOHelper.getImageByteBuffer(puzzle);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 try {
                     Rectangle rect = new Rectangle(width * j, height * i, width - (2 * imageOffset), height - (2 * imageOffset));
-                    String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, rect, pixelSize);
-                    // String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, pixelSize, null, Collections.singletonList(rect));
+                    String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, pixelSize, null, Collections.singletonList(rect));
                     result = result.replaceAll("\\s+|\\n+", "");
                     if (printReadCharacter) System.out.println(result);
                     if (!result.isEmpty()) {

@@ -27,7 +27,10 @@ public class SudokuScreenIO {
             throw new OCRException("Could not initialize robot", e);
         }
         instance.setDatapath("./tessdata");
-        instance.setTessVariable("tessedit_char_whitelist", "0123456789");
+        instance.setTessVariable("tessedit_char_whitelist", "0123456789 ");
+        // new version
+        // instance.setVariable("tessedit_char_whitelist", "0123456789 ");
+        instance.setPageSegMode(10);
     }
 
     public void typeValues(ImageSudokuFile mode, byte[][] tiles) {
@@ -76,6 +79,7 @@ public class SudokuScreenIO {
                 try {
                     Rectangle rect = new Rectangle(width * j, height * i, width - (2 * imageOffset), height - (2 * imageOffset));
                     String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, rect, pixelSize);
+                    // String result = instance.doOCR(actualImageWidth, actualImageHeight, imgData, pixelSize, null, Collections.singletonList(rect));
                     result = result.replaceAll("\\s+|\\n+", "");
                     if (printReadCharacter) System.out.println(result);
                     if (!result.isEmpty()) {
